@@ -84,6 +84,11 @@ public class BonesTokens extends AbstractTokenMaker {
                             currentTokenType = Token.COMMENT_EOL;
                             break;
 
+                        case ':':
+                            currentTokenType = Token.SEPARATOR;
+                            break;
+
+
                         default:
                             if (RSyntaxUtilities.isDigit(c)) {
                                 currentTokenType = Token.LITERAL_NUMBER_DECIMAL_INT;
@@ -114,6 +119,12 @@ public class BonesTokens extends AbstractTokenMaker {
                             addToken(text, currentTokenStart,i-1, Token.WHITESPACE, newStartOffset+currentTokenStart);
                             currentTokenStart = i;
                             currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
+                            break;
+
+                        case ';':
+                            addToken(text, currentTokenStart,i-1, Token.WHITESPACE, newStartOffset+currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = Token.SEPARATOR;
                             break;
 
                         case '#':
@@ -155,6 +166,12 @@ public class BonesTokens extends AbstractTokenMaker {
                             currentTokenType = Token.WHITESPACE;
                             break;
 
+                        case ';':
+                            addToken(text, currentTokenStart, i-1, Token.IDENTIFIER, newStartOffset+currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = Token.SEPARATOR;
+                            break;
+
                         case '"':
                             addToken(text, currentTokenStart,i-1, Token.IDENTIFIER, newStartOffset+currentTokenStart);
                             currentTokenStart = i;
@@ -186,6 +203,12 @@ public class BonesTokens extends AbstractTokenMaker {
                             addToken(text, currentTokenStart,i-1, Token.LITERAL_NUMBER_DECIMAL_INT, newStartOffset+currentTokenStart);
                             currentTokenStart = i;
                             currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
+                            break;
+
+                        case ';':
+                            addToken(text, currentTokenStart,i-1, Token.LITERAL_NUMBER_DECIMAL_INT, newStartOffset+currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = Token.SEPARATOR;
                             break;
 
                         default:
