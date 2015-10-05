@@ -1,4 +1,4 @@
-package barebones.logic;
+package barebones.events;
 
 import java.util.HashMap;
 

@@ -1,9 +1,11 @@
 package barebones.ui;
 
 
-import barebones.logic.EventResponse;
+import barebones.events.ErrorResponse;
+import barebones.events.EventResponse;
+import barebones.logic.ErrorCaught;
 import barebones.logic.Listener;
-import barebones.logic.ResultResponse;
+import barebones.events.ResultResponse;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
@@ -28,6 +30,8 @@ public class BonesPanel extends JPanel {
     private JScrollPane debugPane;
     private DefaultTableModel dataModel;
     private RSyntaxTextArea textArea;
+    private JTextArea messageArea;
+    private JScrollPane messagePane;
 
     public BonesPanel(JFrame parent, java.util.List<Listener> barebonesListeners) {
         this.parent = parent;
@@ -44,7 +48,16 @@ public class BonesPanel extends JPanel {
         setupMenuBar();
         setupButtonPanel();
         setupEditPanel();
+        setupMessagePanel();
+    }
 
+    private void setupMessagePanel() {
+        messageArea = new JTextArea();
+        messageArea.setEditable(false);
+        messageArea.setRows(3);
+        messagePane = new JScrollPane(messageArea);
+
+        this.add(messagePane, BorderLayout.PAGE_END);
     }
 
     private void setupButtonPanel() {
@@ -65,6 +78,17 @@ public class BonesPanel extends JPanel {
                         for (Map.Entry<String, Long> kv : result.vars.entrySet()) {
                             dataModel.addRow(new Object[]{kv.getKey(), kv.getValue()});
                         }
+
+                        messageArea.setForeground(Color.BLACK);
+                        messageArea.setText("Compilation successful");
+                    } else if(response instanceof ErrorResponse) {
+                        StringBuffer message = new StringBuffer();
+                        for (ErrorCaught err : ((ErrorResponse) response).errors)
+                            message.append("Error caught " + (err.line!=-1 ? "on line " + err.line : "") +
+                                    ": " + err.error.getMessage() + " [code " + err.error.getCode() + "]\n");
+
+                        messageArea.setForeground(Color.RED);
+                        messageArea.setText(message.toString());
                     }
 
                     if(response.eventConsumed)
