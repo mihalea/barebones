@@ -1,0 +1,126 @@
+package barebones.ui;
+
+
+import barebones.logic.EventResponse;
+import barebones.logic.Listener;
+import barebones.logic.ResultResponse;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.Map;
+import java.util.List;
+
+/**
+ * Created by mircea on 02/10/15.
+ */
+public class BonesPanel extends JPanel {
+
+    private final JFrame parent;
+    private final List<Listener> listeners;
+
+    private JTextPane editArea;
+    private JScrollPane debugPane;
+    private DefaultTableModel dataModel;
+
+    public BonesPanel(JFrame parent, java.util.List<Listener> barebonesListeners) {
+        this.parent = parent;
+        this.listeners = barebonesListeners;
+
+        this.setupPanel();
+    }
+
+    private void setupPanel() {
+
+        this.setLayout(new BorderLayout());
+        this.setBorder(new EmptyBorder(5, 15, 20, 15));
+
+        setupMenuBar();
+        setupButtonPanel();
+        setupEditPanel();
+
+    }
+
+    private void setupButtonPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 10));
+
+        JButton run = new JButton("Run");
+        run.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String code = editArea.getText();
+                dataModel.setRowCount(0);
+
+                for (Listener li : listeners) {
+                    EventResponse response = li.compile(code);
+
+                    if(response instanceof ResultResponse) {
+                        ResultResponse result = (ResultResponse) response;
+                        for (Map.Entry<String, Long> kv : result.vars.entrySet()) {
+                            dataModel.addRow(new Object[]{kv.getKey(), kv.getValue()});
+                        }
+                    }
+
+                    if(response.eventConsumed)
+                        break;
+                }
+            }
+        });
+        panel.add(run);
+
+        JButton debug = new JButton("Debug");
+        panel.add(debug);
+
+        this.add(panel, BorderLayout.PAGE_START);
+    }
+
+    private void setupEditPanel() {
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        editArea = new JTextPane();
+        JScrollPane editPane = new JScrollPane(editArea);
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 0.8d;
+        c.weighty = 1d;
+        c.fill = GridBagConstraints.BOTH;
+        centerPanel.add(editPane, c);
+
+        dataModel = new DefaultTableModel();
+        dataModel.addColumn("Variable");
+        dataModel.addColumn("Value");
+        JTable debugTable = new JTable(dataModel);
+        debugTable.getColumnModel().getColumn(0).setWidth(10);
+        debugTable.getColumnModel().getColumn(1).setWidth(10);
+        debugPane = new JScrollPane(debugTable);
+        debugPane.setPreferredSize(new Dimension(100, 0));
+
+        c.gridx = 1;
+        c.gridy = 0;
+        c.weightx = 0.2d;
+        c.weighty = 1d;
+        centerPanel.add(debugPane, c);
+
+        this.add(centerPanel, BorderLayout.CENTER);
+    }
+
+    private void setupMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu file = new JMenu("File");
+
+        JMenuItem file_new = new JMenuItem("New");
+        file.add(file_new);
+
+        JMenuItem file_open = new JMenuItem("Open");
+        file.add(file_open);
+
+        menuBar.add(file);
+
+        parent.setJMenuBar(menuBar);
+    }
+}
