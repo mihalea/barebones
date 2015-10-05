@@ -12,9 +12,8 @@ import java.util.List;
 public class ErrorResponse extends EventResponse {
     public List<ErrorCaught> errors;
 
-    public ErrorResponse(List<ErrorCaught> errors, boolean eventConsumed) {
-        super(eventConsumed);
-
+    public ErrorResponse(long timeElapsed, boolean eventConsumed, List<ErrorCaught> errors) {
+        super(timeElapsed, eventConsumed);
         this.errors = errors;
     }
 }

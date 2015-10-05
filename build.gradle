@@ -2,12 +2,19 @@ group 'ro.mihalea.cadets.barebones'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
 
+mainClassName = "barebones.Main";
+
 jar {
     manifest {
-        attributes 'Main-Class': 'barebones.Main'
+        attributes 'Main-Class': mainClassName
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 

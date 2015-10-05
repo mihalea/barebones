@@ -72,6 +72,7 @@ public class BonesPanel extends JPanel {
 
                 for (Listener li : listeners) {
                     EventResponse response = li.compile(code);
+                    StringBuffer output = new StringBuffer();
 
                     if(response instanceof ResultResponse) {
                         ResultResponse result = (ResultResponse) response;
@@ -80,17 +81,23 @@ public class BonesPanel extends JPanel {
                         }
 
                         messageArea.setForeground(Color.BLACK);
-                        messageArea.setText("Compilation successful");
+                        output.append("Compilation successful!\n");
                     } else if(response instanceof ErrorResponse) {
-                        StringBuffer message = new StringBuffer();
                         for (ErrorCaught err : ((ErrorResponse) response).errors)
-                            message.append("Error caught " + (err.line!=-1 ? "on line " + err.line : "") +
+                            output.append("Error caught " + (err.line!=-1 ? "on line " + err.line : "") +
                                     ": " + err.error.getMessage() + " [code " + err.error.getCode() + "]\n");
 
                         messageArea.setForeground(Color.RED);
-                        messageArea.setText(message.toString());
-                    }
 
+
+
+                    }
+                    output.append("Memory used: " +
+                            (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
+                                    / 1024 / 1024 + " MB\n");
+                    output.append("CPU time: " + response.timeElapsed + " ms");
+
+                    messageArea.setText(output.toString());
                     if(response.eventConsumed)
                         break;
                 }

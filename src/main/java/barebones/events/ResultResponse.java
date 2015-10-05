@@ -8,9 +8,8 @@ import java.util.HashMap;
 public class ResultResponse extends EventResponse {
     public HashMap<String, Long> vars;
 
-    public ResultResponse(HashMap<String, Long> vars, boolean eventConsumed) {
-        super(eventConsumed);
-
+    public ResultResponse(long timeElapsed, boolean eventConsumed, HashMap<String, Long> vars) {
+        super(timeElapsed, eventConsumed);
         this.vars = vars;
     }
 }

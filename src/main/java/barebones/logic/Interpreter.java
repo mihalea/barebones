@@ -35,6 +35,7 @@ public class Interpreter implements Runnable {
     private List<ErrorCaught> errors;
 
     private long startTime;
+    private long elapsed;
 
     public Interpreter() {
         vars = new HashMap<>();
@@ -57,11 +58,11 @@ public class Interpreter implements Runnable {
 
                 if(faulty_compile) {
                     System.out.println("Faulty compile");
-                    return new ErrorResponse(errors, false);
+                    return new ErrorResponse(elapsed, false, errors);
                 }
 
                 System.out.println("Successful compilation");
-                return new ResultResponse(vars, false);
+                return new ResultResponse(elapsed, false, vars);
             }
         };
     }
@@ -88,7 +89,7 @@ public class Interpreter implements Runnable {
     }
 
     private boolean time_okay() {
-        long elapsed = (System.nanoTime() - startTime) / 1000000;
+        elapsed = (System.nanoTime() - startTime) / 1000000;
         return elapsed < TIMEOUT;
     }
 
