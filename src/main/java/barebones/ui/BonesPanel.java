@@ -4,6 +4,10 @@ package barebones.ui;
 import barebones.logic.EventResponse;
 import barebones.logic.Listener;
 import barebones.logic.ResultResponse;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -21,9 +25,9 @@ public class BonesPanel extends JPanel {
     private final JFrame parent;
     private final List<Listener> listeners;
 
-    private JTextPane editArea;
     private JScrollPane debugPane;
     private DefaultTableModel dataModel;
+    private RSyntaxTextArea textArea;
 
     public BonesPanel(JFrame parent, java.util.List<Listener> barebonesListeners) {
         this.parent = parent;
@@ -50,7 +54,7 @@ public class BonesPanel extends JPanel {
         run.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String code = editArea.getText();
+                String code = textArea.getText();
                 dataModel.setRowCount(0);
 
                 for (Listener li : listeners) {
@@ -80,15 +84,18 @@ public class BonesPanel extends JPanel {
         JPanel centerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        editArea = new JTextPane();
-        JScrollPane editPane = new JScrollPane(editArea);
+        textArea = new RSyntaxTextArea();
+        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
+        atmf.putMapping("text/barebones", "barebones.ui.BonesTokens");
+        textArea.setSyntaxEditingStyle("text/barebones");
+        RTextScrollPane scrollPane = new RTextScrollPane(textArea);
 
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 0.8d;
         c.weighty = 1d;
         c.fill = GridBagConstraints.BOTH;
-        centerPanel.add(editPane, c);
+        centerPanel.add(scrollPane, c);
 
         dataModel = new DefaultTableModel();
         dataModel.addColumn("Variable");
