@@ -96,11 +96,6 @@ public class Interpreter {
             }
             lines.add(token.trim());
         }
-
-        if(lines.size() == 0) {
-            this.setError(BonesError.NO_DELIMITER, -1);
-            return;
-        }
     }
 
     private void compile() {

@@ -83,16 +83,4 @@ public abstract class BonesError {
             return "You are trying to end a while that doesn't even exist";
         }
     };
-
-    public static BonesError NO_DELIMITER = new BonesError() {
-        @Override
-        public int getCode() {
-            return 0x7;
-        }
-
-        @Override
-        public String getMessage() {
-            return "There were no tokens identified. Probably you have no delimiters";
-        }
-    };
 }
