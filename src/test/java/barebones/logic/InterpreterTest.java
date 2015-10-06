@@ -41,11 +41,31 @@ public class InterpreterTest extends TestCase {
         testErrorCode(BonesError.NO_START, "end;");
     }
 
+    public void testSyntaxWhile() throws Exception {
+        List<String> programs = new ArrayList<>();
+        //programs.add("clear x; incr x;");
+        programs.add("clear x; incr x; while x;");
+        programs.add("clear x; incr x; while x not;");
+        programs.add("clear x; incr x; while x not 0;");
+
+        testErrorCode(BonesError.SYNTAX_UNKNOWN, programs);
+
+        programs.clear();
+        programs.add("clear x; incr x; while x not 0 yay;");
+        programs.add("clear x; incr x; while x not 1 yay;");
+        programs.add("clear x; incr x; while x pi 1 yay;");
+        programs.add("clear x; incr x; while x pi 1 do;");
+        programs.add("clear x; incr x; while x pi 0 do;");
+
+        testErrorCode(BonesError.SYNTAX_WHILE, programs);
+    }
+
     private void testErrorCode(BonesError expected, String code) throws Exception{
         List<String> list = new ArrayList<>();
         list.add(code);
         testErrorCode(expected, list);
     }
+
 
     private void testErrorCode(BonesError expected, List<String> programs) throws Exception{
         Interpreter interpreter = new Interpreter();
