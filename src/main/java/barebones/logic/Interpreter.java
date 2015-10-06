@@ -169,7 +169,7 @@ public class Interpreter implements Runnable {
                 }
 
                 return ParseReply.START;
-            } else if (!words[0].equals("while")) {
+            } else if (words[0].equals("while")) {
                 this.setError(BonesError.SYNTAX_WHILE, line_no);
                 return ParseReply.ERROR;
             } else {
