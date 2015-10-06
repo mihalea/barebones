@@ -13,12 +13,11 @@ import java.util.regex.Pattern;
 /**
  * Created by mircea on 02/10/15.
  */
-public class Interpreter implements Runnable {
+public class Interpreter {
     private final long TIMEOUT = 5000; //milliseconds
 
     private HashMap<String, Long> vars;
     private List<String> lines;
-    private String raw;
 
     private List<Integer> loops;
     private List<String> loop_cond;
@@ -48,8 +47,7 @@ public class Interpreter implements Runnable {
         return new Listener() {
             @Override
             public EventResponse compile(String code) {
-                Interpreter.this.raw = code;
-                Interpreter.this.run();
+                Interpreter.this.run(code);
 
                 if(faulty_compile) {
                     System.out.println("Faulty compile");
@@ -76,10 +74,9 @@ public class Interpreter implements Runnable {
         System.out.println("Compiling...");
     }
 
-    @Override
-    public void run() {
+    private void run(String raw) {
         this.reset();
-        this.rawToCode();
+        this.rawToCode(raw);
         this.compile();
     }
 
@@ -88,26 +85,29 @@ public class Interpreter implements Runnable {
         return elapsed < TIMEOUT;
     }
 
-    private void rawToCode() {
+    private void rawToCode(String raw) {
         String[] split = raw.split(";");
 
         int skip = 0;
         for(String token : split) {
-            if(skip%10==0?time_okay():true) {
+            if(skip++%10==0?!time_okay():false) {
                 this.setError(BonesError.TIMEOUT, -1);
                 return;
             }
             lines.add(token.trim());
         }
-    }
 
-    private void compile() {
-        int len = lines.size();
-        if(len == 0) {
+        if(lines.size() == 0) {
             this.setError(BonesError.NO_DELIMITER, -1);
             return;
         }
+    }
 
+    private void compile() {
+        if(faulty_compile)
+            return;
+
+        int len = lines.size();
         for (int i=0 ; i<len && !faulty_compile ; i++) {
             if(!time_okay()) {
                 this.setError(BonesError.TIMEOUT, -1);

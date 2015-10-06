@@ -9,7 +9,7 @@ public abstract class BonesError {
 
     @Override
     public String toString() {
-        return "Error " + getCode();
+        return "Error " + getCode() + ": " + getMessage();
     }
 
     public static BonesError SYNTAX_WHILE = new BonesError() {
