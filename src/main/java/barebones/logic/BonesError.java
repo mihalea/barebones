@@ -7,6 +7,11 @@ public abstract class BonesError {
     public abstract int getCode();
     public abstract String getMessage();
 
+    @Override
+    public String toString() {
+        return "Error " + getCode();
+    }
+
     public static BonesError SYNTAX_WHILE = new BonesError() {
         @Override
         public int getCode() {
