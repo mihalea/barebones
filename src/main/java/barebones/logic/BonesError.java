@@ -66,4 +66,16 @@ public abstract class BonesError {
             return "You might have an infinite while. Or some super code. Whatever. I won't interpret anymore.";
         }
     };
+
+    public static BonesError NO_START = new BonesError() {
+        @Override
+        public int getCode() {
+            return 0x6;
+        }
+
+        @Override
+        public String getMessage() {
+            return "You are trying to end a while that doesn't even exist";
+        }
+    };
 }

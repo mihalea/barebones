@@ -140,6 +140,11 @@ public class Interpreter implements Runnable {
 
         String[] words = line.split(" ");
         if (words.length == 1 && words[0].equals("end")) {
+            if(loops.size() == 0) {
+                this.setError(BonesError.NO_START, line_no);
+                return ParseReply.ERROR;
+            }
+
             if(!execute) {
                 if (toIgnore == 0)
                     execute = true;
