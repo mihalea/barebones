@@ -60,6 +60,24 @@ public class InterpreterTest extends TestCase {
         testErrorCode(BonesError.SYNTAX_WHILE, programs);
     }
 
+    public void testNoDelimiters() throws Exception {
+        List<String> programs = new ArrayList<>();
+        programs.add("lel");
+        programs.add("clear x\nincr x");
+
+        testErrorCode(BonesError.NO_DELIMITER, programs);
+    }
+
+    public void testSyntaxUnknown() throws Exception {
+        List<String> programs = new ArrayList<>();
+        programs.add("lel;");
+        programs.add("hello there;");
+        programs.add("How are you doing?; lel;");
+        programs.add("clear x; yay");
+
+        testErrorCode(BonesError.SYNTAX_UNKNOWN, programs);
+    }
+
     private void testErrorCode(BonesError expected, String code) throws Exception{
         List<String> list = new ArrayList<>();
         list.add(code);
