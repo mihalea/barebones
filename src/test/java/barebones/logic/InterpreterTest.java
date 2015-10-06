@@ -25,20 +25,20 @@ public class InterpreterTest extends TestCase {
         List<String> programs = new ArrayList<>();
         programs.add("incr x;");
         programs.add("decr x;");
-        programs.add("while x not 0 do;");
         programs.add("incr x; clear x;");
         programs.add("decr x; clear x;");
-        programs.add("while x not 0 do; clear x;");
 
 
         testErrorCode(BonesError.NOT_CLEARED, programs);
     }
 
-    public void testUnknownSystax() throws Exception {
-        List<String> programs = new ArrayList<>();
-        programs.add("end;");
+    public void testWhileNoEnd() throws Exception {
+        testErrorCode(BonesError.NO_END,
+                "clear x; incr x; while x not 0 do; decr x;");
+    }
 
-        testErrorCode(BonesError.SYNTAX_UNKNOWN, programs);
+    public void testWhileNoStart() throws Exception {
+        testErrorCode(BonesError.NO_START, "end;");
     }
 
     private void testErrorCode(BonesError expected, String code) throws Exception{
