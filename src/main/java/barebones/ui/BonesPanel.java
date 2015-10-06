@@ -3,6 +3,7 @@ package barebones.ui;
 
 import barebones.events.ErrorResponse;
 import barebones.events.EventResponse;
+import barebones.logic.BonesError;
 import barebones.logic.ErrorCaught;
 import barebones.logic.Listener;
 import barebones.events.ResultResponse;
@@ -83,9 +84,9 @@ public class BonesPanel extends JPanel {
                         messageArea.setForeground(Color.BLACK);
                         output.append("Compilation successful!\n");
                     } else if(response instanceof ErrorResponse) {
-                        for (ErrorCaught err : ((ErrorResponse) response).errors)
-                            output.append("Error caught " + (err.line!=-1 ? "on line " + err.line : "") +
-                                    ": " + err.error.getMessage() + " [code " + err.error.getCode() + "]\n");
+                        ErrorCaught err = ((ErrorResponse) response).error;
+                        output.append("Error caught " + (err.line!=-1 ? "on line " + err.line : "") +
+                                ": " + err.error.getMessage() + " [code " + err.error.getCode() + "]\n");
 
                         messageArea.setForeground(Color.RED);
 

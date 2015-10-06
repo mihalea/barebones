@@ -3,7 +3,6 @@ package barebones.logic;
 import barebones.events.ErrorResponse;
 import barebones.events.EventResponse;
 import barebones.events.ResultResponse;
-import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +31,7 @@ public class Interpreter implements Runnable {
 
     private boolean faulty_compile;
 
-    private List<ErrorCaught> errors;
+    private ErrorCaught error;
 
     private long startTime;
     private long elapsed;
@@ -42,12 +41,8 @@ public class Interpreter implements Runnable {
         lines = new ArrayList<>();
         loops = new ArrayList<>();
         loop_cond = new ArrayList<>();
-        errors = new ArrayList<>();
     }
 
-    private HashMap<String, Long> start() {
-        return vars;
-    }
 
     public Listener setupListener() {
         return new Listener() {
@@ -58,7 +53,7 @@ public class Interpreter implements Runnable {
 
                 if(faulty_compile) {
                     System.out.println("Faulty compile");
-                    return new ErrorResponse(elapsed, false, errors);
+                    return new ErrorResponse(elapsed, false, error);
                 }
 
                 System.out.println("Successful compilation");
@@ -72,7 +67,7 @@ public class Interpreter implements Runnable {
         lines.clear();
         loops.clear();
         loop_cond.clear();
-        errors.clear();
+        error = null;
         execute = true;
         toIgnore = 0;
         faulty_compile = false;
@@ -108,7 +103,7 @@ public class Interpreter implements Runnable {
         int len = lines.size();
         for (int i=0 ; i<len && !faulty_compile ; i++) {
             if(!time_okay()) {
-                this.addError(BonesError.TIMEOUT, -1);
+                this.setError(BonesError.TIMEOUT, -1);
                 return;
             }
 
@@ -134,7 +129,7 @@ public class Interpreter implements Runnable {
         }
 
         if(loops.size() > 0 || loop_cond.size() > 0)
-            this.addError(BonesError.NO_END, -1);
+            this.setError(BonesError.NO_END, -1);
 
         for (Long v : vars.values())
             System.out.println(v);
@@ -170,10 +165,10 @@ public class Interpreter implements Runnable {
 
                 return ParseReply.START;
             } else if (!words[0].equals("while")) {
-                this.addError(BonesError.SYNTAX_WHILE, line_no);
+                this.setError(BonesError.SYNTAX_WHILE, line_no);
                 return ParseReply.ERROR;
             } else {
-                this.addError(BonesError.SYNTAX_UNKNOWN, line_no);
+                this.setError(BonesError.SYNTAX_UNKNOWN, line_no);
                 return ParseReply.ERROR;
             }
 
@@ -188,7 +183,7 @@ public class Interpreter implements Runnable {
                 var = words[1];
 
                 if (!vars.containsKey(var)) {
-                    this.addError(BonesError.NOT_CLEARED, line_no);
+                    this.setError(BonesError.NOT_CLEARED, line_no);
                     return ParseReply.ERROR;
                 }
 
@@ -199,7 +194,7 @@ public class Interpreter implements Runnable {
                 var = words[1];
 
                 if (!vars.containsKey(var)) {
-                    this.addError(BonesError.NOT_CLEARED, line_no);
+                    this.setError(BonesError.NOT_CLEARED, line_no);
                     return ParseReply.ERROR;
                 }
 
@@ -209,13 +204,13 @@ public class Interpreter implements Runnable {
             }
         }
 
-        this.addError(BonesError.SYNTAX_UNKNOWN, line_no);
+        this.setError(BonesError.SYNTAX_UNKNOWN, line_no);
         return ParseReply.ERROR;
     }
 
-    private void addError(BonesError error, int line) {
-        System.out.println("Error caught: " + error.getMessage());
-        errors.add(new ErrorCaught(error, line));
+    private void setError(BonesError err, int line) {
+        System.out.println("Error caught: " + err.getMessage());
+        error = new ErrorCaught(err, line);
         faulty_compile = true;
     }
 

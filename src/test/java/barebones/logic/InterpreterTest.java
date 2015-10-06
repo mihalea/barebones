@@ -23,8 +23,7 @@ public class InterpreterTest extends TestCase {
             fail("Interpreter did not exit with an error");
         else {
             ErrorResponse errorResponse = (ErrorResponse) response;
-            if(errorResponse.errors.size() == 0)
-                fail("No errors contained in the event");
+            assertNotNull(errorResponse.error);
         }
     }
 
