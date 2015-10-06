@@ -7,6 +7,7 @@ import barebones.events.ResultResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -113,7 +114,7 @@ public class Interpreter {
             if(reply == ParseReply.START) {
                 last_loop = i + 1;
                 loops.add(last_loop);
-                System.out.println("Starting while");
+                //System.out.println("Starting while");
             }
             else if(reply == ParseReply.END) {
                 if(vars.get(last_cond) != 0)
@@ -133,8 +134,8 @@ public class Interpreter {
         if(loops.size() > 0 || loop_cond.size() > 0)
             this.setError(BonesError.NO_END, -1);
 
-        for (Long v : vars.values())
-            System.out.println(v);
+        for (Map.Entry<String, Long> e : vars.entrySet())
+            System.out.println(e.getKey() + " = " + e.getValue());
     }
 
     private ParseReply parseLine(String line, final int line_no) {
@@ -184,7 +185,7 @@ public class Interpreter {
                 var = words[1];
                 vars.put(var, 0l);
 
-                System.out.println("Clear: " + var);
+                //System.out.println("Clear: " + var);
                 return ParseReply.OK;
             } else if (words[0].equals("incr")) {
                 var = words[1];
@@ -195,7 +196,7 @@ public class Interpreter {
                 }
 
                 vars.put(var, vars.get(var) + 1);
-                System.out.println("Incr: " + var);
+                //System.out.println("Incr: " + var);
                 return ParseReply.OK;
             } else if (words[0].equals("decr")) {
                 var = words[1];
@@ -206,7 +207,7 @@ public class Interpreter {
                 }
 
                 vars.put(var, vars.get(var) - 1);
-                System.out.println("Decr: " + var);
+                //System.out.println("Decr: " + var);
                 return ParseReply.OK;
             } else {
                 this.setError(BonesError.SYNTAX_UNKNOWN, line_no);

@@ -2,6 +2,7 @@ package barebones.logic;
 
 import barebones.events.ErrorResponse;
 import barebones.events.EventResponse;
+import barebones.events.ResultResponse;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -16,9 +17,72 @@ public class InterpreterTest extends TestCase {
         assertNotNull(new Interpreter().setupListener());
     }
 
+    public void testCodeOkay() throws Exception {
+        Interpreter interpreter = new Interpreter();
+        Listener listener = interpreter.setupListener();
+
+        EventResponse response =
+                listener.compile("clear x; incr x; while x not 0 do; decr x; end;");
+
+        assertNotNull(response);
+
+        if(response instanceof ResultResponse == false)
+            fail("The returned event is not the expected type");
+        else {
+            ResultResponse resultResponse = (ResultResponse) response;
+            assertNotNull(resultResponse.vars);
+
+            if(resultResponse.vars.size() == 0)
+                fail("There are no returned variabled");
+        }
+    }
+
+    public void testCodeOkayWithMultiplication() throws Exception {
+        Interpreter interpreter = new Interpreter();
+        Listener listener = interpreter.setupListener();
+
+        EventResponse response =
+                listener.compile("clear X;\n" +
+                        "incr X;\n" +
+                        "incr X;\n" +
+                        "clear Y;\n" +
+                        "incr Y;\n" +
+                        "incr Y;\n" +
+                        "incr Y;\n" +
+                        "clear Z;\n" +
+                        "while X not 0 do;\n" +
+                        "   clear W;\n" +
+                        "   while Y not 0 do;\n" +
+                        "      incr Z;\n" +
+                        "      incr W;\n" +
+                        "      decr Y;\n" +
+                        "   end;\n" +
+                        "   while W not 0 do;\n" +
+                        "      incr Y;\n" +
+                        "      decr W;\n" +
+                        "   end;\n" +
+                        "   decr X;\n" +
+                        "end;");
+
+        assertNotNull(response);
+
+        if(response instanceof ResultResponse == false)
+            fail("The returned event is not the expected type");
+        else {
+            ResultResponse resultResponse = (ResultResponse) response;
+            assertNotNull(resultResponse.vars);
+
+            if(resultResponse.vars.size() == 0)
+                fail("There are no returned variabled");
+
+            if(resultResponse.vars.get("Z") != 6)
+                fail("The multiplication result is not correct");
+        }
+    }
+
     public void testTimeout() throws Exception {
         testErrorCode(BonesError.TIMEOUT,
-                "clear x; incr x; while x not 0 do; end;");
+                "clear x; incr x; while x not 0 do; incr x; end;");
     }
 
     public void testAssignBeforeClear() throws Exception {
@@ -43,7 +107,6 @@ public class InterpreterTest extends TestCase {
 
     public void testSyntaxWhile() throws Exception {
         List<String> programs = new ArrayList<>();
-        //programs.add("clear x; incr x;");
         programs.add("clear x; incr x; while x;");
         programs.add("clear x; incr x; while x not;");
         programs.add("clear x; incr x; while x not 0;");
@@ -96,11 +159,5 @@ public class InterpreterTest extends TestCase {
                         expected, errorResponse.error.error);
             }
         }
-    }
-
-    private EventResponse getResponse(String code) {
-        Interpreter interpreter = new Interpreter();
-        Listener listener = interpreter.setupListener();
-        return listener.compile(code);
     }
 }
