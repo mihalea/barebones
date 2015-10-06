@@ -89,18 +89,25 @@ public class Interpreter implements Runnable {
     }
 
     private void rawToCode() {
-        lines.clear();
-
-        Pattern pattern = Pattern.compile("(.+?);");
-        Matcher matcher = pattern.matcher(raw);
+        String[] split = raw.split(";");
 
         int skip = 0;
-        while(matcher.find() && (skip%10==0?time_okay():true))
-            lines.add(matcher.group(1).trim());
+        for(String token : split) {
+            if(skip%10==0?time_okay():true) {
+                this.setError(BonesError.TIMEOUT, -1);
+                return;
+            }
+            lines.add(token.trim());
+        }
     }
 
     private void compile() {
         int len = lines.size();
+        if(len == 0) {
+            this.setError(BonesError.NO_DELIMITER, -1);
+            return;
+        }
+
         for (int i=0 ; i<len && !faulty_compile ; i++) {
             if(!time_okay()) {
                 this.setError(BonesError.TIMEOUT, -1);
@@ -206,6 +213,9 @@ public class Interpreter implements Runnable {
                 vars.put(var, vars.get(var) - 1);
                 System.out.println("Decr: " + var);
                 return ParseReply.OK;
+            } else {
+                this.setError(BonesError.SYNTAX_UNKNOWN, line_no);
+                return ParseReply.ERROR;
             }
         }
 
