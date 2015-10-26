@@ -32,33 +32,33 @@ public class Interpreter {
      * List that holds all statements after being split with the
      * {@link java.lang.String#split(String, int)} with ";" as a delimiter
      */
-    private List<String> lines;
+    private List<String> statements;
 
     /**
      * List that acts as a stack and holds all the line numbers at which a loop
-     * has been started. This field is a pair with {@link ro.mihalea.cadets.barebones.logic.Interpreter#loop_cond}
+     * has been started. This field is a pair with {@link ro.mihalea.cadets.barebones.logic.Interpreter#whileVariable}
      */
-    private List<Integer> loops;
+    private List<Integer> whileStartIndex;
 
     /**
      * List that acts as a stack and holds all the variables that the whiles
-     * are checked against. This field is a pair with {@link ro.mihalea.cadets.barebones.logic.Interpreter#loops}
+     * are checked against. This field is a pair with {@link ro.mihalea.cadets.barebones.logic.Interpreter#whileStartIndex}
      */
-    private List<String> loop_cond;
+    private List<String> whileVariable;
 
     /**
      * Holds the line number of the current while loop.
      */
-    private Integer last_loop;
+    private Integer lastWhileIndex;
 
     /**
      * Holds the name of the variable of current while loop.
      */
-    private String last_cond;
+    private String lastWhileVariable;
 
     /**
      * State variable that tells the interpreter whether it should
-     * keep parsing the next lines.
+     * keep parsing the next statements.
      */
     private boolean execute;
 
@@ -81,23 +81,23 @@ public class Interpreter {
     private ErrorCaught error;
 
     /**
-     * Timestamp in nanoseconds since UNIX era at which the interpreter
-     * has started running.
+     * Epoch time at which the interpreter has started running.
      */
     private long startTime;
+
     /**
      * Time in milliseconds since the interpreter has started running
      */
-    private long elapsed;
+    private long elapsedTime;
 
     /**
      * Initializes all the lists and maps used by the interpreter
      */
     public Interpreter() {
         vars = new HashMap<>();
-        lines = new ArrayList<>();
-        loops = new ArrayList<>();
-        loop_cond = new ArrayList<>();
+        statements = new ArrayList<>();
+        whileStartIndex = new ArrayList<>();
+        whileVariable = new ArrayList<>();
     }
 
 
@@ -113,12 +113,12 @@ public class Interpreter {
                 Interpreter.this.run(code);
 
                 if(faulty_compile) {
-                    System.out.println("Faulty interpret");
-                    return new ErrorResponse(elapsed, false, error);
+                    System.err.println("Faulty interpret");
+                    return new ErrorResponse(elapsedTime, false, error);
                 }
 
                 System.out.println("Successful compilation");
-                return new ResultResponse(elapsed, false, vars);
+                return new ResultResponse(elapsedTime, false, vars);
             }
         };
     }
@@ -129,9 +129,9 @@ public class Interpreter {
      */
     private void reset() {
         vars.clear();
-        lines.clear();
-        loops.clear();
-        loop_cond.clear();
+        statements.clear();
+        whileStartIndex.clear();
+        whileVariable.clear();
         error = null;
         execute = true;
         toIgnore = 0;
@@ -158,8 +158,8 @@ public class Interpreter {
      */
     private boolean time_okay() {
         // converts from nano to milli (10^-9 to 10^-3)
-        elapsed = (System.nanoTime() - startTime) / 1000000;
-        return elapsed < TIMEOUT;
+        elapsedTime = (System.nanoTime() - startTime) / 1000000;
+        return elapsedTime < TIMEOUT;
     }
 
     /**
@@ -170,14 +170,22 @@ public class Interpreter {
     private void rawToCode(String raw) {
         String[] split = raw.split(";");
 
-        int skip = 0;
+
         for(String token : split) {
-            if(skip++%10==0?!time_okay():false) {
+            /**
+             * Once every 1k lines it checks whether the interpreter
+             * has overcome the {@link TIMEOUT} threshold.
+             */
+            if(statements.size()%1000==0 && !time_okay()) {
                 this.setError(BonesError.TIMEOUT, -1);
                 return;
             }
+
+            /**
+             *  Only non-empty lines should be added
+             */
             if(token.length() > 0)
-                lines.add(token.trim());
+                statements.add(token.trim());
         }
     }
 
@@ -185,38 +193,45 @@ public class Interpreter {
      * Starts the compilation of the currently loaded statements.
      */
     private void compile() {
+        //Is this good programming practice?
         if(faulty_compile)
             return;
 
-        int len = lines.size();
+        int len = statements.size();
         for (int i=0 ; i<len && !faulty_compile ; i++) {
             if(!time_okay()) {
                 this.setError(BonesError.TIMEOUT, -1);
                 return;
             }
 
-            ParseReply reply = parseLine(lines.get(i), i + 1);
+            ParseReply reply = parseStatement(statements.get(i), i + 1);
+            /**
+             * A while has started
+             */
             if(reply == ParseReply.START) {
-                last_loop = i + 1;
-                loops.add(last_loop);
+                lastWhileIndex = i + 1;
+                whileStartIndex.add(lastWhileIndex);
                 //System.out.println("Starting while");
             }
+            /**
+             * A while has ended
+             */
             else if(reply == ParseReply.END) {
-                if(vars.get(last_cond) != 0)
-                    i = last_loop - 1; //handle the for incrementation
+                if(vars.get(lastWhileVariable) != 0)
+                    i = lastWhileIndex - 1; //handle the for incrementation
                 else {
-                    loops.remove(loops.size()-1);
-                    if(loops.size() > 0)
-                        last_loop = loops.get(loops.size()-1);
+                    whileStartIndex.remove(whileStartIndex.size()-1);
+                    if(whileStartIndex.size() > 0)
+                        lastWhileIndex = whileStartIndex.get(whileStartIndex.size()-1);
 
-                    loop_cond.remove(loop_cond.size() - 1);
-                    if(loop_cond.size() > 0)
-                        last_cond = loop_cond.get(loop_cond.size() - 1);
+                    whileVariable.remove(whileVariable.size() - 1);
+                    if(whileVariable.size() > 0)
+                        lastWhileVariable = whileVariable.get(whileVariable.size() - 1);
                 }
             }
         }
 
-        if(loops.size() > 0 || loop_cond.size() > 0)
+        if(whileStartIndex.size() > 0 || whileVariable.size() > 0)
             this.setError(BonesError.NO_END, -1);
 
         for (Map.Entry<String, Long> e : vars.entrySet())
@@ -230,12 +245,12 @@ public class Interpreter {
      * @param line_no Line number
      * @return Response signaling the outcome of the parser
      */
-    private ParseReply parseLine(String line, final int line_no) {
+    private ParseReply parseStatement(String line, final int line_no) {
         String var;
 
         String[] words = line.split(" ");
         if (words.length == 1 && words[0].equals("end")) {
-            if(loops.size() == 0) {
+            if(whileStartIndex.size() == 0) {
                 this.setError(BonesError.NO_START, line_no);
                 return ParseReply.ERROR;
             }
@@ -257,8 +272,8 @@ public class Interpreter {
                         execute = false;
                         return ParseReply.OK;
                     }
-                    last_cond = words[1];
-                    loop_cond.add(last_cond);
+                    lastWhileVariable = words[1];
+                    whileVariable.add(lastWhileVariable);
                 } else {
                     toIgnore++;
                 }
@@ -329,7 +344,7 @@ public class Interpreter {
      */
     private enum ParseReply {
         /**
-         * Notifies the {@link Interpreter} that the lines has been parsed successfully
+         * Notifies the {@link Interpreter} that the statements has been parsed successfully
          */
         OK,
 
