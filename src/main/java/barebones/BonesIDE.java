@@ -12,6 +12,10 @@ public class BonesIDE {
     private Interpreter interpreter;
     private Listener listener;
 
+    /**
+     * Must be called to display the IDE.
+     * It initializes all of it's values here.
+     */
     public void start() {
         interpreter = new Interpreter();
         listener = interpreter.setupListener();
