@@ -71,7 +71,7 @@ public class BonesPanel extends JPanel {
                 dataModel.setRowCount(0);
 
                 for (Listener li : listeners) {
-                    EventResponse response = li.compile(code);
+                    EventResponse response = li.interpret(code);
                     StringBuffer output = new StringBuffer();
 
                     if(response instanceof ResultResponse) {

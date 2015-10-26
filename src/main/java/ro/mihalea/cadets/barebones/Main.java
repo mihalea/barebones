@@ -1,7 +1,7 @@
 package ro.mihalea.cadets.barebones;
 
 /**
- * Created by mircea on 02/10/15.
+ * Main class containing the main method
  */
 public class Main {
 

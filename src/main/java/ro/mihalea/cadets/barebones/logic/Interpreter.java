@@ -10,30 +10,89 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by mircea on 02/10/15.
+ * Class in which all the backend logic takes place.
+ * The objects listens to any {@link Listener#interpret(String)} events triggered
+ * and then act accordingly.
  */
 public class Interpreter {
+    /**
+     * Constant field which describes the amount of milliseconds after the
+     * interpreter should return {@link ro.mihalea.cadets.barebones.events.ErrorResponse}
+     * with the code 0x5.
+     */
     private final long TIMEOUT = 5000; //milliseconds
 
+    /**
+     * Map that holds all the variables that are used by the interpreter
+     * in one run of a program. At every new run the map gets cleared.
+     */
     private HashMap<String, Long> vars;
+
+    /**
+     * List that holds all statements after being split with the
+     * {@link java.lang.String#split(String, int)} with ";" as a delimiter
+     */
     private List<String> lines;
 
+    /**
+     * List that acts as a stack and holds all the line numbers at which a loop
+     * has been started. This field is a pair with {@link ro.mihalea.cadets.barebones.logic.Interpreter#loop_cond}
+     */
     private List<Integer> loops;
+
+    /**
+     * List that acts as a stack and holds all the variables that the whiles
+     * are checked against. This field is a pair with {@link ro.mihalea.cadets.barebones.logic.Interpreter#loops}
+     */
     private List<String> loop_cond;
 
+    /**
+     * Holds the line number of the current while loop.
+     */
     private Integer last_loop;
+
+    /**
+     * Holds the name of the variable of current while loop.
+     */
     private String last_cond;
 
+    /**
+     * State variable that tells the interpreter whether it should
+     * keep parsing the next lines.
+     */
     private boolean execute;
+
+    /**
+     * Field used to tell the interpreter not to parse any of the
+     * statements that are inside a while loop that has failed the
+     * variable check
+     */
     private int toIgnore; //applies for nested loops
 
+    /**
+     * Field which holds whether the interpreter has faulted and should
+     * return an {@link ro.mihalea.cadets.barebones.events.ErrorResponse}
+     */
     private boolean faulty_compile;
 
+    /**
+     * Error which should be returned in the event response
+     */
     private ErrorCaught error;
 
+    /**
+     * Timestamp in nanoseconds since UNIX era at which the interpreter
+     * has started running.
+     */
     private long startTime;
+    /**
+     * Time in milliseconds since the interpreter has started running
+     */
     private long elapsed;
 
+    /**
+     * Initializes all the lists and maps used by the interpreter
+     */
     public Interpreter() {
         vars = new HashMap<>();
         lines = new ArrayList<>();
@@ -42,14 +101,19 @@ public class Interpreter {
     }
 
 
+    /**
+     * Method which sets up a new instance of the {@link ro.mihalea.cadets.barebones.logic.Listener} with
+     * its abstract method implemented inline which passes the raw code to the interpreter
+     * @return New instance of the {@link ro.mihalea.cadets.barebones.logic.Listener}
+     */
     public Listener setupListener() {
         return new Listener() {
             @Override
-            public EventResponse compile(String code) {
+            public EventResponse interpret(String code) {
                 Interpreter.this.run(code);
 
                 if(faulty_compile) {
-                    System.out.println("Faulty compile");
+                    System.out.println("Faulty interpret");
                     return new ErrorResponse(elapsed, false, error);
                 }
 
@@ -59,6 +123,10 @@ public class Interpreter {
         };
     }
 
+    /**
+     * Resets all the variables used for a new program
+     * to be interpreted.
+     */
     private void reset() {
         vars.clear();
         lines.clear();
@@ -73,17 +141,32 @@ public class Interpreter {
         System.out.println("Compiling...");
     }
 
+    /**
+     * Starts the compiler with a new sequence of code
+     * @param raw Raw unmodified program
+     */
     private void run(String raw) {
         this.reset();
         this.rawToCode(raw);
         this.compile();
     }
 
+    /**
+     * Method that checks whether the time elapsed running the interpreter
+     * is still under the threshold specified under {@link ro.mihalea.cadets.barebones.logic.Interpreter#TIMEOUT}.
+     * @return Returns if the interpreter is still under the timeout threshold
+     */
     private boolean time_okay() {
+        // converts from nano to milli (10^-9 to 10^-3)
         elapsed = (System.nanoTime() - startTime) / 1000000;
         return elapsed < TIMEOUT;
     }
 
+    /**
+     * Takes a raw program and converts it into statements that are to be
+     * parsed by the interpreter using {@link java.lang.String#split(String, int)} with ";" as a delimiter
+     * @param raw Raw program as a continuous {@link java.lang.String}
+     */
     private void rawToCode(String raw) {
         String[] split = raw.split(";");
 
@@ -93,10 +176,14 @@ public class Interpreter {
                 this.setError(BonesError.TIMEOUT, -1);
                 return;
             }
-            lines.add(token.trim());
+            if(token.length() > 0)
+                lines.add(token.trim());
         }
     }
 
+    /**
+     * Starts the compilation of the currently loaded statements.
+     */
     private void compile() {
         if(faulty_compile)
             return;
@@ -136,6 +223,13 @@ public class Interpreter {
             System.out.println(e.getKey() + " = " + e.getValue());
     }
 
+    /**
+     * Analyzes the line and return a {@link ro.mihalea.cadets.barebones.logic.Interpreter.ParseReply}
+     * depending on the outcome of the parser
+     * @param line Text containing the statement
+     * @param line_no Line number
+     * @return Response signaling the outcome of the parser
+     */
     private ParseReply parseLine(String line, final int line_no) {
         String var;
 
@@ -217,16 +311,41 @@ public class Interpreter {
         return ParseReply.ERROR;
     }
 
+    /**
+     * Generates and sets the {@link ro.mihalea.cadets.barebones.logic.ErrorCaught} while
+     * also printing an error message to the console for debugging purposes.
+     * @param err Error type
+     * @param line Line on which the error occurred
+     */
     private void setError(BonesError err, int line) {
-        System.out.println("Error caught: " + err.getMessage());
+        System.err.println("Error caught: " + err.getMessage());
         error = new ErrorCaught(err, line);
         faulty_compile = true;
     }
 
+    /**
+     * Enumeration holding the four possible outcomes
+     * of the {@link Interpreter#compile()} method.
+     */
     private enum ParseReply {
+        /**
+         * Notifies the {@link Interpreter} that the lines has been parsed successfully
+         */
         OK,
+
+        /**
+         * Notifies the {@link Interpreter} that a "while" block has begun
+         */
         START,
+
+        /**
+         * Notifies the {@link Interpreter} that a "while" block has ended
+         */
         END,
+
+        /**
+         * Notifies the {@link Interpreter} that the line has failed to be parsed
+         */
         ERROR
     }
 }

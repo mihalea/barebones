@@ -3,7 +3,7 @@ package ro.mihalea.cadets.barebones.events;
 import java.util.HashMap;
 
 /**
- * Created by mircea on 02/10/15.
+ * Abstract class which which lays out the event specification
  */
 public abstract class EventResponse {
     /**

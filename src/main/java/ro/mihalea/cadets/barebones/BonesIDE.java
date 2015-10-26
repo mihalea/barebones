@@ -5,7 +5,7 @@ import ro.mihalea.cadets.barebones.logic.Listener;
 import ro.mihalea.cadets.barebones.ui.BonesFrame;
 
 /**
- * Created by mircea on 02/10/15.
+ * Controller object which combines the backend and the frontend.
  */
 public class BonesIDE {
     private BonesFrame frame;

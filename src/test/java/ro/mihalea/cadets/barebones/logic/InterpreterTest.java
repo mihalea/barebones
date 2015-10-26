@@ -22,7 +22,7 @@ public class InterpreterTest extends TestCase {
         Listener listener = interpreter.setupListener();
 
         EventResponse response =
-                listener.compile("clear x; incr x; while x not 0 do; decr x; end;");
+                listener.interpret("clear x; incr x; while x not 0 do; decr x; end;");
 
         assertNotNull(response);
 
@@ -42,7 +42,7 @@ public class InterpreterTest extends TestCase {
         Listener listener = interpreter.setupListener();
 
         EventResponse response =
-                listener.compile("clear X;\n" +
+                listener.interpret("clear X;\n" +
                         "incr X;\n" +
                         "incr X;\n" +
                         "clear Y;\n" +
@@ -147,7 +147,7 @@ public class InterpreterTest extends TestCase {
         Listener listener = interpreter.setupListener();
 
         for (String code : programs) {
-            EventResponse response = listener.compile(code);
+            EventResponse response = listener.interpret(code);
             assertNotNull("Interpreter returned null", response);
 
             if (response instanceof ErrorResponse == false)

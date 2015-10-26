@@ -3,7 +3,7 @@ package ro.mihalea.cadets.barebones.events;
 import ro.mihalea.cadets.barebones.logic.ErrorCaught;
 
 /**
- * Created by mm8g15 on 10/5/2015.
+ * Response that signals an error
  */
 public class ErrorResponse extends EventResponse {
     /**
