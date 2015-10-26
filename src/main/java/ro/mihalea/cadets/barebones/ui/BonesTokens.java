@@ -1,4 +1,4 @@
-package barebones.ui;
+package ro.mihalea.cadets.barebones.ui;
 
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMaker;
 import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;

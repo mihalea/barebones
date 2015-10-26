@@ -1,8 +1,8 @@
-package barebones;
+package ro.mihalea.cadets.barebones;
 
-import barebones.logic.Interpreter;
-import barebones.logic.Listener;
-import barebones.ui.BonesFrame;
+import ro.mihalea.cadets.barebones.logic.Interpreter;
+import ro.mihalea.cadets.barebones.logic.Listener;
+import ro.mihalea.cadets.barebones.ui.BonesFrame;
 
 /**
  * Created by mircea on 02/10/15.

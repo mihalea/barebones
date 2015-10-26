@@ -1,4 +1,4 @@
-package barebones;
+package ro.mihalea.cadets.barebones;
 
 /**
  * Created by mircea on 02/10/15.

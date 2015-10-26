@@ -1,8 +1,8 @@
-package barebones.logic;
+package ro.mihalea.cadets.barebones.logic;
 
-import barebones.events.ErrorResponse;
-import barebones.events.EventResponse;
-import barebones.events.ResultResponse;
+import ro.mihalea.cadets.barebones.events.ErrorResponse;
+import ro.mihalea.cadets.barebones.events.EventResponse;
+import ro.mihalea.cadets.barebones.events.ResultResponse;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;

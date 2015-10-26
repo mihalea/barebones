@@ -1,4 +1,4 @@
-package barebones.events;
+package ro.mihalea.cadets.barebones.events;
 
 import java.util.HashMap;
 

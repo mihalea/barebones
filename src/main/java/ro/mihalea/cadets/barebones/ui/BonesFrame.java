@@ -1,7 +1,7 @@
-package barebones.ui;
+package ro.mihalea.cadets.barebones.ui;
 
 
-import barebones.logic.Listener;
+import ro.mihalea.cadets.barebones.logic.Listener;
 
 import javax.swing.*;
 import java.awt.*;

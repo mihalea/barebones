@@ -1,15 +1,13 @@
-package barebones.logic;
+package ro.mihalea.cadets.barebones.logic;
 
-import barebones.events.ErrorResponse;
-import barebones.events.EventResponse;
-import barebones.events.ResultResponse;
+import ro.mihalea.cadets.barebones.events.ErrorResponse;
+import ro.mihalea.cadets.barebones.events.EventResponse;
+import ro.mihalea.cadets.barebones.events.ResultResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by mircea on 02/10/15.

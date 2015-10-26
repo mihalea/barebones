@@ -1,12 +1,11 @@
-package barebones.ui;
+package ro.mihalea.cadets.barebones.ui;
 
 
-import barebones.events.ErrorResponse;
-import barebones.events.EventResponse;
-import barebones.logic.BonesError;
-import barebones.logic.ErrorCaught;
-import barebones.logic.Listener;
-import barebones.events.ResultResponse;
+import ro.mihalea.cadets.barebones.events.ErrorResponse;
+import ro.mihalea.cadets.barebones.events.EventResponse;
+import ro.mihalea.cadets.barebones.logic.ErrorCaught;
+import ro.mihalea.cadets.barebones.logic.Listener;
+import ro.mihalea.cadets.barebones.events.ResultResponse;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
@@ -118,7 +117,7 @@ public class BonesPanel extends JPanel {
 
         textArea = new RSyntaxTextArea();
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
-        atmf.putMapping("text/barebones", "barebones.ui.BonesTokens");
+        atmf.putMapping("text/barebones", "BonesTokens");
         textArea.setSyntaxEditingStyle("text/barebones");
         RTextScrollPane scrollPane = new RTextScrollPane(textArea);
 

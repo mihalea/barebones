@@ -1,6 +1,6 @@
-package barebones.logic;
+package ro.mihalea.cadets.barebones.logic;
 
-import barebones.events.EventResponse;
+import ro.mihalea.cadets.barebones.events.EventResponse;
 
 /**
  * Created by mircea on 02/10/15.
