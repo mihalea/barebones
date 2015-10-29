@@ -236,7 +236,7 @@ public class Interpreter {
                      * Setting the i as the lastWhileIndex so that after
                      * it is incremented in will parse the first line
                      */
-                    i = lastWhileIndex;
+                    i = lastWhileIndex - 1;
                 else {
                     /**
                      * After the variable gets to 0 remove the last elements

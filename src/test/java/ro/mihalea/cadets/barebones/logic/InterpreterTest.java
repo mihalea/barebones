@@ -4,6 +4,9 @@ import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
 import ro.mihalea.cadets.barebones.events.ResultResponse;
 import junit.framework.TestCase;
+import ro.mihalea.cadets.barebones.logic.BonesError;
+import ro.mihalea.cadets.barebones.logic.Interpreter;
+import ro.mihalea.cadets.barebones.logic.Listener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +16,12 @@ import java.util.List;
  */
 public class InterpreterTest extends TestCase {
 
-    public void testListenerCreation() throws Exception {
-        assertNotNull(new Interpreter().setupListener());
+    public void testListenerCreation() {
+        Interpreter interpreter = new Interpreter();
+        assertNotNull(interpreter);
+
+        Listener listener = interpreter.setupListener();
+        assertNotNull(listener);
     }
 
     public void testCodeOkay() throws Exception {
