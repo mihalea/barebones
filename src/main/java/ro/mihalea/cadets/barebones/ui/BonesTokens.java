@@ -84,7 +84,7 @@ public class BonesTokens extends AbstractTokenMaker {
                             currentTokenType = Token.COMMENT_EOL;
                             break;
 
-                        case ':':
+                        case ';':
                             currentTokenType = Token.SEPARATOR;
                             break;
 
@@ -238,6 +238,43 @@ public class BonesTokens extends AbstractTokenMaker {
                         addToken(text, currentTokenStart,i, Token.LITERAL_STRING_DOUBLE_QUOTE, newStartOffset+currentTokenStart);
                         currentTokenType = Token.NULL;
                     }
+                    break;
+
+                case Token.SEPARATOR:
+                    switch (c) {
+
+                        case ' ':
+                        case '\t':
+                            addToken(text, currentTokenStart,i-1, Token.SEPARATOR, newStartOffset+currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = Token.WHITESPACE;
+                            break;
+
+                        case '"':
+                            addToken(text, currentTokenStart,i-1, Token.SEPARATOR, newStartOffset+currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
+                            break;
+
+                        case ';':
+                            addToken(text, currentTokenStart,i-1, Token.SEPARATOR, newStartOffset+currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = Token.SEPARATOR;
+                            break;
+
+                        default:
+
+                            if (RSyntaxUtilities.isDigit(c)) {
+                                break;   // Still a literal number.
+                            }
+
+                            // Otherwise, remember this was a number and start over.
+                            addToken(text, currentTokenStart,i-1, Token.LITERAL_NUMBER_DECIMAL_INT, newStartOffset+currentTokenStart);
+                            i--;
+                            currentTokenType = Token.NULL;
+
+                    } // End of switch (c).
+
                     break;
 
             } // End of switch (currentTokenType).
