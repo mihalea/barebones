@@ -57,17 +57,19 @@ public class Interpreter {
     private String lastWhileVariable;
 
     /**
-     * State variable that tells the interpreter whether it should
-     * keep parsing the next statements.
+     * State variable which when false indicates that the interpreter
+     * has ran into a while that failed to verify its condition
+     * therefore any of the statements inside are not to be executed
      */
     private boolean execute;
 
     /**
-     * Field used to tell the interpreter not to parse any of the
-     * statements that are inside a while loop that has failed the
-     * variable check
+     * Field used to also ignore the nested whiles inside one which failed
+     * to verify. When it gets to zero it means that we have also exited
+     * the initial while which set the {@link ro.mihalea.cadets.barebones.logic.Interpreter#execute}
+     * to true;
      */
-    private int toIgnore; //applies for nested loops
+    private int toIgnore;
 
     /**
      * Field which holds whether the interpreter has faulted and should
@@ -148,7 +150,7 @@ public class Interpreter {
     private void run(String raw) {
         this.reset();
         this.rawToCode(raw);
-        this.compile();
+        this.interpret();
     }
 
     /**
@@ -177,7 +179,7 @@ public class Interpreter {
              * has overcome the {@link TIMEOUT} threshold.
              */
             if(statements.size()%1000==0 && !time_okay()) {
-                this.setError(BonesError.TIMEOUT, -1);
+                this.throwError(BonesError.TIMEOUT, -1);
                 return;
             }
 
@@ -192,15 +194,19 @@ public class Interpreter {
     /**
      * Starts the compilation of the currently loaded statements.
      */
-    private void compile() {
+    private void interpret() {
         //Is this good programming practice?
         if(faulty_compile)
             return;
 
         int len = statements.size();
         for (int i=0 ; i<len && !faulty_compile ; i++) {
+            /**
+             * Checks whether the interpreter should parse any more lines
+             * depending on whether it is still under the time threshold
+             */
             if(!time_okay()) {
-                this.setError(BonesError.TIMEOUT, -1);
+                this.throwError(BonesError.TIMEOUT, i+1);
                 return;
             }
 
@@ -209,6 +215,10 @@ public class Interpreter {
              * A while has started
              */
             if(reply == ParseReply.START) {
+                /**
+                 * Set current line as the index of the last while started
+                 * and add it to the list
+                 */
                 lastWhileIndex = i + 1;
                 whileStartIndex.add(lastWhileIndex);
                 //System.out.println("Starting while");
@@ -217,9 +227,22 @@ public class Interpreter {
              * A while has ended
              */
             else if(reply == ParseReply.END) {
+                /**
+                 * Check the while condition: if the variable is still bigger
+                 * than 0
+                 */
                 if(vars.get(lastWhileVariable) != 0)
-                    i = lastWhileIndex - 1; //handle the for incrementation
+                    /**
+                     * Setting the i as the lastWhileIndex so that after
+                     * it is incremented in will parse the first line
+                     */
+                    i = lastWhileIndex;
                 else {
+                    /**
+                     * After the variable gets to 0 remove the last elements
+                     * from the lists and if there are more whiles (nested)
+                     * set the current while vars to the previous in the lists
+                     */
                     whileStartIndex.remove(whileStartIndex.size()-1);
                     if(whileStartIndex.size() > 0)
                         lastWhileIndex = whileStartIndex.get(whileStartIndex.size()-1);
@@ -231,9 +254,16 @@ public class Interpreter {
             }
         }
 
+        /**
+         * Throw an error if there are no more lines to be parsed
+         * but there are one or more whiles that have not finished
+         */
         if(whileStartIndex.size() > 0 || whileVariable.size() > 0)
-            this.setError(BonesError.NO_END, -1);
+            this.throwError(BonesError.NO_END, -1);
 
+        /**
+         * Print the keys to the console for debugging purposes
+         */
         for (Map.Entry<String, Long> e : vars.entrySet())
             System.out.println(e.getKey() + " = " + e.getValue());
     }
@@ -246,15 +276,31 @@ public class Interpreter {
      * @return Response signaling the outcome of the parser
      */
     private ParseReply parseStatement(String line, final int line_no) {
+        //name of the current variable
         String var;
 
+        //tokens in the current statement
         String[] words = line.split(" ");
+
+        /**
+         * Because we have a limited syntax we know what kind of instructions
+         * we should expect depending on the number of tokes
+         */
         if (words.length == 1 && words[0].equals("end")) {
+            /**
+             * Checks whether a while has been started before trying to end it
+             */
             if(whileStartIndex.size() == 0) {
-                this.setError(BonesError.NO_START, line_no);
+                this.throwError(BonesError.NO_START, line_no);
                 return ParseReply.ERROR;
             }
 
+            /**
+             * Checks to see if there are more whiles to be ignored because an
+             * outer one has failed to verify its condition
+             * If {@link toIgnore} gets to zero that means that we have exited
+             * the while that failed to verify and we resume normal operation
+             */
             if(!execute) {
                 if (toIgnore == 0)
                     execute = true;
@@ -267,7 +313,17 @@ public class Interpreter {
         } else if (words.length == 5) {
             if (words[0].equals("while") && words[2].equals("not") &&
                     words[3].equals("0") && words[4].equals("do")) {
+
+                /**
+                 * Parse only if we are not inside a while that failed to check
+                 * its condition
+                 */
                 if(execute) {
+                    /**
+                     * Checks the variable as the initial condition check. If failing to
+                     * find the variable or it is already set to zero it will
+                     * skip parsing until it reaches its matching "end" statement
+                     */
                     if(!vars.containsKey(words[1]) || vars.get(words[1]) == 0) {
                         execute = false;
                         return ParseReply.OK;
@@ -275,30 +331,47 @@ public class Interpreter {
                     lastWhileVariable = words[1];
                     whileVariable.add(lastWhileVariable);
                 } else {
+
+                    /**
+                     * A while has been detected inside another one that failed
+                     * to verify its initial condition
+                     */
                     toIgnore++;
                 }
 
                 return ParseReply.START;
             } else if (words[0].equals("while")) {
-                this.setError(BonesError.SYNTAX_WHILE, line_no);
+                /**
+                 * Verifying loosely if the current statement should be a while
+                 * but without a correct syntax
+                 */
+                this.throwError(BonesError.SYNTAX_WHILE, line_no);
                 return ParseReply.ERROR;
             } else {
-                this.setError(BonesError.SYNTAX_UNKNOWN, line_no);
+
+                /**
+                 * If all other branches failed to verify it means that the current
+                 * statement is unknown to the compiler
+                 */
+                this.throwError(BonesError.SYNTAX_UNKNOWN, line_no);
                 return ParseReply.ERROR;
             }
 
         } else if (words.length == 2 && execute) {
             if (words[0].equals("clear")) {
                 var = words[1];
-                vars.put(var, 0l);
+                vars.put(var, 0l); //THIS IS ZERO L, NOT ZERO ONE
 
                 //System.out.println("Clear: " + var);
                 return ParseReply.OK;
             } else if (words[0].equals("incr")) {
                 var = words[1];
 
+                /**
+                 * Checks whether the variable has been declared beforehand
+                 */
                 if (!vars.containsKey(var)) {
-                    this.setError(BonesError.NOT_CLEARED, line_no);
+                    this.throwError(BonesError.NOT_CLEARED, line_no);
                     return ParseReply.ERROR;
                 }
 
@@ -308,8 +381,11 @@ public class Interpreter {
             } else if (words[0].equals("decr")) {
                 var = words[1];
 
+                /**
+                 * Checks whether the variable has been declared beforehand
+                 */
                 if (!vars.containsKey(var)) {
-                    this.setError(BonesError.NOT_CLEARED, line_no);
+                    this.throwError(BonesError.NOT_CLEARED, line_no);
                     return ParseReply.ERROR;
                 }
 
@@ -317,12 +393,21 @@ public class Interpreter {
                 //System.out.println("Decr: " + var);
                 return ParseReply.OK;
             } else {
-                this.setError(BonesError.SYNTAX_UNKNOWN, line_no);
+                /**
+                 * If all other branches failed to verify it means that the current
+                 * statement is unknown to the compiler
+                 */
+
+                this.throwError(BonesError.SYNTAX_UNKNOWN, line_no);
                 return ParseReply.ERROR;
             }
         }
 
-        this.setError(BonesError.SYNTAX_UNKNOWN, line_no);
+        /**
+         * If all other branches failed to verify it means that the current
+         * statement is unknown to the compiler
+         */
+        this.throwError(BonesError.SYNTAX_UNKNOWN, line_no);
         return ParseReply.ERROR;
     }
 
@@ -332,7 +417,7 @@ public class Interpreter {
      * @param err Error type
      * @param line Line on which the error occurred
      */
-    private void setError(BonesError err, int line) {
+    private void throwError(BonesError err, int line) {
         System.err.println("Error caught: " + err.getMessage());
         error = new ErrorCaught(err, line);
         faulty_compile = true;
@@ -340,7 +425,7 @@ public class Interpreter {
 
     /**
      * Enumeration holding the four possible outcomes
-     * of the {@link Interpreter#compile()} method.
+     * of the {@link Interpreter#interpret()} method.
      */
     private enum ParseReply {
         /**
