@@ -3,7 +3,6 @@ package ro.mihalea.cadets.barebones.ui;
 
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
-import ro.mihalea.cadets.barebones.logic.ErrorCaught;
 import ro.mihalea.cadets.barebones.logic.Listener;
 import ro.mihalea.cadets.barebones.events.ResultResponse;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
