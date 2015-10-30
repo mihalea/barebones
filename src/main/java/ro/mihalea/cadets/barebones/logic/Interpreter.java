@@ -15,19 +15,42 @@ import java.util.Map;
  * and then act accordingly.
  */
 public class Interpreter {
+    /**
+     * Handles the raw instruction buffer
+     */
+    private Fetcher fetcher;
 
+    /**
+     * Instantiates the fields
+     */
     public Interpreter() {
+        fetcher = new Fetcher();
     }
 
-
-
+    /**
+     * Creates a new listener which should handle all the events
+     * created by the GUI
+     * @return
+     */
     public Listener setupListener() {
         return new Listener() {
             @Override
             public EventResponse interpret(String code) {
+                Interpreter interpreter = Interpreter.this;
                 return new ErrorResponse(0, false, BonesError.TIMEOUT, 10);
             }
         };
+    }
+
+    /**
+     * Clears all the variables and creates a new environment
+     */
+    public void clear() {
+
+    }
+
+    public void fetch(String program) {
+        fetcher.add(program);
     }
 
 
