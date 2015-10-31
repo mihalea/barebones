@@ -1,6 +1,7 @@
 package ro.mihalea.cadets.barebones.logic.units;
 
 import ro.mihalea.cadets.barebones.logic.exceptions.*;
+import ro.mihalea.cadets.barebones.logic.instructions.Increment;
 import ro.mihalea.cadets.barebones.logic.instructions.InstructionInterface;
 
 import java.util.*;
@@ -80,13 +81,14 @@ public class Decoder {
         Collections.reverse(list);
         heap.addAll(list);
 
+
         /**
          * First token is the instruction code
          */
-        switch(heap.peek()) {
+        String instruction = heap.pop();
+        switch(instruction) {
             case "incr":
-                heap.pop();
-                break;
+                return new Increment().decode(heap);
             case "decr":
                 break;
             case "clear":
@@ -103,6 +105,7 @@ public class Decoder {
                 throw new UnknownInstructionException(lineIndex);
         }
 
+        //!! TO BE REMOVED AFTER THE SWITCH IS DONE !!
         return null;
     }
 

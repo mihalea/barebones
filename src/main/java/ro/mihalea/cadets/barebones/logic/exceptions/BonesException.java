@@ -12,7 +12,7 @@ public abstract class BonesException extends Exception {
     /**
      * Line where the error got thrown
      */
-    protected final int line;
+    protected int line;
 
     /**
      * Protected constructor so that only subclasses can directly create
@@ -33,5 +33,9 @@ public abstract class BonesException extends Exception {
 
     public int getLine() {
         return line;
+    }
+
+    public void setLine(int line) {
+        this.line = line;
     }
 }
