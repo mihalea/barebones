@@ -4,6 +4,9 @@ import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
+import ro.mihalea.cadets.barebones.logic.units.Decoder;
+import ro.mihalea.cadets.barebones.logic.units.Memory;
+import ro.mihalea.cadets.barebones.logic.units.Processor;
 
 /**
  * Class in which all the backend logic takes place.
@@ -12,11 +15,15 @@ import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
  */
 public class Interpreter {
 
+    private Decoder decoder;
+    private Processor processor;
+
     /**
      * Instantiates the fields
      */
     public Interpreter() {
-
+        decoder = new Decoder();
+        processor = new Processor(new Memory());
     }
 
     /**
@@ -32,5 +39,25 @@ public class Interpreter {
                 return new ErrorResponse(0, new NotTerminatedException(100));
             }
         };
+    }
+
+    /**
+     * TO BE ALTERED. DO NOT LEAVE IT LIKE THIS.
+     * Runs the program
+     * @param code Lines of barebones to be run
+     * @return Memory at the time it finished running
+     */
+    public Memory run(String code) {
+        try {
+            decoder.append(code);
+            if (decoder.canFetch()) {
+                processor.load(decoder.fetch());
+                return processor.run();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

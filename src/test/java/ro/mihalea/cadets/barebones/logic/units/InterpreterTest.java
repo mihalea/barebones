@@ -16,4 +16,9 @@ public class InterpreterTest extends TestCase {
         Listener listener = interpreter.setupListener();
         assertNotNull(listener);
     }
+
+    public void testIncrement() {
+        Interpreter interpreter = new Interpreter();
+        interpreter.run("incr x;").print();
+    }
 }

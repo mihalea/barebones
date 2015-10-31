@@ -3,6 +3,7 @@ package ro.mihalea.cadets.barebones.logic.units;
 import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Logic unit that handles all the variables and their declaration
@@ -49,5 +50,16 @@ public class Memory {
      */
     public boolean exists(String key){
         return variables.containsKey(key);
+    }
+
+    /**
+     * Prints the variables and their values to the console
+     * Used mainly for debugging purposes
+     */
+    public void print() {
+        System.out.println("\nMEMORY DUMP:");
+        for(Map.Entry<String, Long> entry : variables.entrySet())
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        System.out.println();
     }
 }

@@ -24,6 +24,14 @@ public class Processor {
     private Memory memory;
 
     /**
+     * Creates a processor with memory assigned
+     * @param memory Memory
+     */
+    public Processor(Memory memory) {
+        this.memory = memory;
+    }
+
+    /**
      * Loads a new list of instructions
      * @param instructions Decoded instructions
      */
@@ -50,13 +58,5 @@ public class Processor {
     public Memory next() {
         programCounter = instructions.get(programCounter).execute(programCounter, memory);
         return memory;
-    }
-
-    public Memory getMemory() {
-        return memory;
-    }
-
-    public void setMemory(Memory memory) {
-        this.memory = memory;
     }
 }
