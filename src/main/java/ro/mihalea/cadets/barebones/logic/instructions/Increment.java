@@ -16,8 +16,16 @@ public class Increment implements InstructionInterface {
      */
     private List<String> variables;
 
+
+    /**
+     * Increases the variable by one if set, otherwise sets it to 1
+     * and return the next consecutive program counter
+     * @param programCounter Current program counter
+     * @param memory Memory handler
+     * @return Next consecutive program counter
+     */
     @Override
-    public void execute(Memory memory) {
+    public int execute(int programCounter, Memory memory) {
         for(String var : variables) {
             try {
                 if (memory.exists(var))
@@ -28,8 +36,15 @@ public class Increment implements InstructionInterface {
                 e.printStackTrace();
             }
         }
+
+        return programCounter + 1;
     }
 
+    /**
+     * Assumes all the arguments parsed are variable names
+     * @param args Arguments to be handled by the instruction
+     * @return The same object
+     */
     @Override
     public InstructionInterface decode(Stack<String> args) {
         variables = new ArrayList<>(args);
