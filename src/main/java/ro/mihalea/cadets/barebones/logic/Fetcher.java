@@ -1,5 +1,7 @@
 package ro.mihalea.cadets.barebones.logic;
 
+import javafx.util.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,9 +10,9 @@ import java.util.List;
  */
 public class Fetcher {
     /**
-     * Instruction buffer
+     * Instruction buffer waiting to be send to the {@link Decoder}
      */
-    List<String> instructions;
+    private List<String> instructions;
 
     /**
      * Instantiates the field

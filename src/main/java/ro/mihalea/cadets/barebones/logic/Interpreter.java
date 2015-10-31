@@ -30,7 +30,7 @@ public class Interpreter {
     /**
      * Creates a new listener which should handle all the events
      * created by the GUI
-     * @return
+     * @return A new listener
      */
     public Listener setupListener() {
         return new Listener() {
@@ -46,11 +46,15 @@ public class Interpreter {
      * Clears all the variables and creates a new environment
      */
     public void clear() {
-
+        fetcher.clear();
     }
 
-    public void fetch(String program) {
+    public void addInstructions(String program) {
         fetcher.add(program);
+    }
+
+    public void decode() {
+
     }
 
 
