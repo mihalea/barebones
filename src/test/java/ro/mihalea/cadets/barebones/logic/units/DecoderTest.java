@@ -33,7 +33,7 @@ public class DecoderTest extends TestCase {
         Decoder decoder = new Decoder();
         assertNotNull(decoder);
 
-        decoder.append("incr x; incr x;");
+        decoder.append("incr x; decr x;");
         assertTrue(decoder.canFetch());
         List<InstructionInterface> instr = decoder.fetch();
         assertEquals(2, instr.size());

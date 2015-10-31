@@ -60,7 +60,7 @@ public class Decoder {
                     if(matcher.find())
                         throw new InvalidCharacterException(lineCount);
 
-                    instructions.add(this.decode(statement, lineCount));
+                    instructions.add(this.decode(sanitized, lineCount));
                 }
             }
 
@@ -122,7 +122,8 @@ public class Decoder {
     public List<InstructionInterface> fetch() throws BlockNotClosedException {
         if(!canFetch())
             throw new BlockNotClosedException(-1);
-
-        return instructions;
+        List<InstructionInterface> returned = new ArrayList<>(instructions);
+        instructions.clear();
+        return returned;
     }
 }
