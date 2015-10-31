@@ -82,10 +82,10 @@ public class BonesPanel extends JPanel {
                         messageArea.setForeground(Color.BLACK);
                         output.append("Compilation successful!\n");
                     } else if(response instanceof ErrorResponse) {
-                        ErrorCaught err = ((ErrorResponse) response).error;
+                        /*ErrorCaught err = ((ErrorResponse) response).error;
                         output.append("Error caught " + (err.line!=-1 ? "on line " + err.line : "") +
                                 ": " + err.error.getMessage() + " [code " + err.error.getCode() + "]\n");
-
+*/
                         messageArea.setForeground(Color.RED);
 
 
