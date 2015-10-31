@@ -1,6 +1,6 @@
-package ro.mihalea.cadets.barebones.logic;
+package ro.mihalea.cadets.barebones.logic.units;
 
-import javafx.util.Pair;
+import ro.mihalea.cadets.barebones.logic.Line;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
 
 import java.util.ArrayList;
@@ -13,19 +13,19 @@ public class Fetcher {
     /**
      * Instruction buffer waiting to be send to the {@link Decoder}
      */
-    private List<String> instructions;
+    private List<Line> instructions;
 
     /**
      * Counts how many lines have been added
      */
-    private int line;
+    private int lineCount;
 
     /**
      * Instantiates the field
      */
     public Fetcher() {
         instructions = new ArrayList<>();
-        line = 0;
+        lineCount = 0;
     }
 
     /**
@@ -41,12 +41,12 @@ public class Fetcher {
          * one statement has not been correctly terminated
          */
         if(code.trim().charAt(code.length() - 1) != ';')
-            throw new NotTerminatedException(line);
+            throw new NotTerminatedException(lineCount);
         for (String s : statements) {
-            line++;
+            lineCount++;
             if (!s.isEmpty())
                 //Trim surrounding whitespace
-                instructions.add(s.trim());
+                instructions.add(new Line(s.trim(), lineCount++));
         }
     }
 
@@ -54,8 +54,8 @@ public class Fetcher {
      * Returns the instruction buffer and clears it
      * @return Raw instruction buffer
      */
-    public List<String> fetch() {
-        List<String> returned = new ArrayList<>(instructions);
+    public List<Line> fetch() {
+        List<Line> returned = new ArrayList<>(instructions);
         instructions.clear();
         return returned;
     }
@@ -65,5 +65,6 @@ public class Fetcher {
      */
     public void clear() {
         instructions.clear();
+        lineCount = 0;
     }
 }

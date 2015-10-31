@@ -2,13 +2,8 @@ package ro.mihalea.cadets.barebones.logic;
 
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
-import ro.mihalea.cadets.barebones.events.ResultResponse;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import ro.mihalea.cadets.barebones.logic.units.Fetcher;
 
 /**
  * Class in which all the backend logic takes place.

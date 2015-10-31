@@ -1,7 +1,8 @@
 package ro.mihalea.cadets.barebones.logic.exceptions;
 
 /**
- * Created by Mircea on 31-Oct-15.
+ * Exception thrown when one ore more instructions have not been
+ * correctly terminated using the semicolon
  */
 public class NotTerminatedException extends BonesException {
     /**

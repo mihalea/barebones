@@ -1,6 +1,7 @@
 package ro.mihalea.cadets.barebones.logic;
 
 import junit.framework.TestCase;
+import ro.mihalea.cadets.barebones.logic.units.Fetcher;
 
 import java.util.List;
 

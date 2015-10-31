@@ -1,4 +1,4 @@
-package ro.mihalea.cadets.barebones.logic;
+package ro.mihalea.cadets.barebones.logic.units;
 
 /**
  * Created by Mircea on 31-Oct-15.
