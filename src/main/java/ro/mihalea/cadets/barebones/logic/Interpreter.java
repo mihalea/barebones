@@ -3,6 +3,7 @@ package ro.mihalea.cadets.barebones.logic;
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
 import ro.mihalea.cadets.barebones.events.ResultResponse;
+import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public class Interpreter {
             @Override
             public EventResponse interpret(String code) {
                 Interpreter interpreter = Interpreter.this;
-                return new ErrorResponse(0, false, BonesError.TIMEOUT, 10);
+                return new ErrorResponse(0, new NotTerminatedException(100));
             }
         };
     }
@@ -49,7 +50,7 @@ public class Interpreter {
         fetcher.clear();
     }
 
-    public void addInstructions(String program) {
+    public void addInstructions(String program) throws NotTerminatedException {
         fetcher.add(program);
     }
 

@@ -97,8 +97,6 @@ public class BonesPanel extends JPanel {
                     output.append("CPU time: " + response.timeElapsed + " ms");
 
                     messageArea.setText(output.toString());
-                    if(response.eventConsumed)
-                        break;
                 }
             }
         });

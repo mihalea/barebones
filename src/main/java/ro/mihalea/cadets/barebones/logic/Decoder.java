@@ -1,6 +1,6 @@
 package ro.mihalea.cadets.barebones.logic;
 
-import ro.mihalea.cadets.barebones.logic.instructions.IInstruction;
+import ro.mihalea.cadets.barebones.logic.instructions.InstructionInterface;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ public class Decoder {
     /**
      * Decoded instruction buffer waiting to be sent to {@link Processor}
      */
-    private List<IInstruction> instructions;
+    private List<InstructionInterface> instructions;
 
     /**
      * Instantiates the fields
@@ -31,11 +31,11 @@ public class Decoder {
     }
 
     /**
-     * Decodes one instruction and creates it's corresponding IInstruction
+     * Decodes one instruction and creates it's corresponding InstructionInterface
      * @param rawInstruction One raw instruction
-     * @return Matchind IInstruction implementation
+     * @return Matchind InstructionInterface implementation
      */
-    private IInstruction decode(String rawInstruction) {
+    private InstructionInterface decode(String rawInstruction) {
         /**
          * Adding a reversed list to a stack basically makes
          * it a heap, therefore the confusing naming in the declaration
