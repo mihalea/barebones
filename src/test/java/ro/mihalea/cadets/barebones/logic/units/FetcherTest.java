@@ -3,6 +3,7 @@ package ro.mihalea.cadets.barebones.logic.units;
 import junit.framework.TestCase;
 import ro.mihalea.cadets.barebones.logic.Line;
 import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
 import ro.mihalea.cadets.barebones.logic.units.Fetcher;
 
@@ -91,9 +92,24 @@ public class FetcherTest extends TestCase {
 
         assertTrue(fetcher.add("incr x;"));
         assertFalse(fetcher.add("decr y"));
+        assertFalse(fetcher.add("decr x; incr y"));
 
         List<BonesException> exceptions = fetcher.getExceptions();
-        if(!(exceptions.get(0) instanceof NotTerminatedException))
+        for (BonesException exception : exceptions)
+            if(!(exception instanceof NotTerminatedException))
+                fail("Exception thrown not of expected type");
+    }
 
+    public void testInvalidCharacter() throws Exception {
+        Fetcher fetcher = new Fetcher();
+        assertNotNull(fetcher);
+
+        assertTrue(fetcher.add("incr x; decr x2;"));
+        assertFalse(fetcher.add("incr sf#;"));
+
+        List<BonesException> exceptions = fetcher.getExceptions();
+        for (BonesException exception : exceptions)
+            if(!(exception instanceof InvalidCharacterException))
+                fail("Exception thrown not of expected type");
     }
 }

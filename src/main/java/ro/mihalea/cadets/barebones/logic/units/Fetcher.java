@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * Class that handles the raw instruction buffer
  */
 public class Fetcher {
-    private final String INVALID_REGEX = "^[a-zA-Z0-9\\W]";
+    private final String INVALID_REGEX = "[^a-zA-Z0-9\\s]";
 
     /**
      * Instruction buffer waiting to be send to the {@link Decoder}
@@ -65,11 +65,10 @@ public class Fetcher {
                      * Sanitize the line by removing unnecessary whitespace
                      * and testing against invalid characters
                      */
-                    String sanitized = String.join(" ", s.trim().split("\\W"));
+                    String sanitized = String.join(" ", s.trim().split("\\s"));
                     Pattern pattern = Pattern.compile(INVALID_REGEX);
                     Matcher matcher = pattern.matcher(sanitized);
-
-                    if(matcher.matches())
+                    if(matcher.find())
                         exceptions.add(new InvalidCharacterException(lineCount));
                     else
                         instructions.add(new Line(s.trim(), lineCount++));
