@@ -51,4 +51,13 @@ public class InterpreterTest extends TestCase {
         assertEquals(-1, memory.get("x"));
         assertEquals(-1, memory.get("y"));
     }
+
+    public void testClear() throws NoValueAssignedException {
+        Interpreter interpreter = new Interpreter();
+        Memory memory = interpreter.run("decr x; clear x;");
+        assertEquals(0, memory.get("x"));
+
+        memory = interpreter.run("decr x; clear x; incr x;");
+        assertEquals(1, memory.get("x"));
+    }
 }

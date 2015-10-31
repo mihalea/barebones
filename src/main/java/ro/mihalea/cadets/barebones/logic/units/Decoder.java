@@ -1,6 +1,7 @@
 package ro.mihalea.cadets.barebones.logic.units;
 
 import ro.mihalea.cadets.barebones.logic.exceptions.*;
+import ro.mihalea.cadets.barebones.logic.instructions.Clear;
 import ro.mihalea.cadets.barebones.logic.instructions.Decrement;
 import ro.mihalea.cadets.barebones.logic.instructions.Increment;
 import ro.mihalea.cadets.barebones.logic.instructions.InstructionInterface;
@@ -93,14 +94,14 @@ public class Decoder {
             case "decr":
                 return new Decrement().decode(heap);
             case "clear":
+                return new Clear().decode(heap);
+            case "copy":
+                break;
+            case "init":
                 break;
             case "while":
                 break;
             case "end":
-                break;
-            case "copy":
-                break;
-            case "init":
                 break;
             default:
                 throw new UnknownInstructionException(lineIndex);
