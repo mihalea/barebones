@@ -4,6 +4,7 @@ import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
 
@@ -14,7 +15,7 @@ public class Clear implements InstructionInterface {
     /**
      * List of variables to be decremented
      */
-    private List<String> variables;
+    private HashSet<String> variables;
 
     /**
      * Set the variables to zero and return the next consecutive program counter
@@ -38,7 +39,7 @@ public class Clear implements InstructionInterface {
      */
     @Override
     public InstructionInterface decode(Stack<String> args) {
-        variables = new ArrayList<>(args);
+        variables = new HashSet<>(args);
         return this;
     }
 }
