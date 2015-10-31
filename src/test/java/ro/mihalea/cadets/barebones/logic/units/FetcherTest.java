@@ -2,6 +2,8 @@ package ro.mihalea.cadets.barebones.logic.units;
 
 import junit.framework.TestCase;
 import ro.mihalea.cadets.barebones.logic.Line;
+import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
+import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
 import ro.mihalea.cadets.barebones.logic.units.Fetcher;
 
 import java.util.List;
@@ -15,10 +17,10 @@ public class FetcherTest extends TestCase {
         Fetcher fetcher = new Fetcher();
         assertNotNull(fetcher);
 
-        fetcher.add("incr x;");
+        assertTrue(fetcher.add("incr x;"));
         List<Line> instr = fetcher.fetch();
         assertEquals(1, instr.size());
-        assertEquals("incr x", instr.get(0));
+        assertTrue(instr.get(0).equals("incr x"));
 
         instr = fetcher.fetch();
         assertEquals(0, instr.size());
@@ -28,11 +30,11 @@ public class FetcherTest extends TestCase {
         Fetcher fetcher = new Fetcher();
         assertNotNull(fetcher);
 
-        fetcher.add("incr x; decr x;");
+        assertTrue(fetcher.add("incr x; decr x;"));
         List<Line> instr = fetcher.fetch();
         assertEquals(2, instr.size());
-        assertEquals("incr x", instr.get(0));
-        assertEquals("decr x", instr.get(1));
+        assertTrue(instr.get(0).equals("incr x"));
+        assertTrue(instr.get(1).equals("decr x"));
 
         instr = fetcher.fetch();
         assertEquals(0, instr.size());
@@ -42,13 +44,13 @@ public class FetcherTest extends TestCase {
         Fetcher fetcher = new Fetcher();
         assertNotNull(fetcher);
 
-        fetcher.add("incr x;");
-        fetcher.add("decr x; clear y;");
+        assertTrue(fetcher.add("incr x;"));
+        assertTrue(fetcher.add("decr x; clear y;"));
         List<Line> instr = fetcher.fetch();
         assertEquals(3, instr.size());
-        assertEquals("incr x", instr.get(0));
-        assertEquals("decr x", instr.get(1));
-        assertEquals("clear y", instr.get(2));
+        assertTrue(instr.get(0).equals("incr x"));
+        assertTrue(instr.get(1).equals("decr x"));
+        assertTrue(instr.get(2).equals("clear y"));
 
         instr = fetcher.fetch();
         assertEquals(0, instr.size());
@@ -58,7 +60,7 @@ public class FetcherTest extends TestCase {
         Fetcher fetcher = new Fetcher();
         assertNotNull(fetcher);
 
-        fetcher.add("incr x; decr x;");
+        assertTrue(fetcher.add("incr x; decr x;"));
         fetcher.clear();
         List<Line> instr = fetcher.fetch();
         assertEquals(0, instr.size());
@@ -69,10 +71,10 @@ public class FetcherTest extends TestCase {
         assertNotNull(fetcher);
 
         fetcher.clear();
-        fetcher.add("decr x;");
+        assertTrue(fetcher.add("decr x;"));
         List<Line> instr = fetcher.fetch();
         assertEquals(1, instr.size());
-        assertEquals("decr x", instr.get(0));
+        assertTrue(instr.get(0).equals("decr x"));
     }
 
     public void testClearOnEmpty() throws Exception {
@@ -81,5 +83,17 @@ public class FetcherTest extends TestCase {
 
         fetcher.clear();
         assertEquals(0, fetcher.fetch().size());
+    }
+
+    public void testNotTerminated() throws Exception {
+        Fetcher fetcher = new Fetcher();
+        assertNotNull(fetcher);
+
+        assertTrue(fetcher.add("incr x;"));
+        assertFalse(fetcher.add("decr y"));
+
+        List<BonesException> exceptions = fetcher.getExceptions();
+        if(!(exceptions.get(0) instanceof NotTerminatedException))
+
     }
 }

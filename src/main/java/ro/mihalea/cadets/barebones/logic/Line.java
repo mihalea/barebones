@@ -29,6 +29,8 @@ public class Line {
     public boolean equals(Object obj) {
         if (obj instanceof Line)
             return ((Line)obj).code.equals(this.code);
+        else if(obj instanceof String)
+            return obj.equals(this.code);
         else
             return false;
     }

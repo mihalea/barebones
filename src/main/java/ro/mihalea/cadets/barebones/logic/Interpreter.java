@@ -2,6 +2,7 @@ package ro.mihalea.cadets.barebones.logic;
 
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
 import ro.mihalea.cadets.barebones.logic.units.Fetcher;
 
@@ -45,7 +46,8 @@ public class Interpreter {
         fetcher.clear();
     }
 
-    public void addInstructions(String program) throws NotTerminatedException {
+    public void addInstructions(String program)
+            throws NotTerminatedException, InvalidCharacterException {
         fetcher.add(program);
     }
 
