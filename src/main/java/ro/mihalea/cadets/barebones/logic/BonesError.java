@@ -26,106 +26,17 @@ public abstract class BonesError {
     }
 
     /**
-     * Error 0x1:
-     * This error gets thrown every time the user does not follow the
-     * syntax for the "while" loop imposed by the specification.
+     * One or more statements have not been terminated by the semicolon
      */
-    public static BonesError SYNTAX_WHILE = new BonesError() {
+    public static BonesError NOT_TERMINATED = new BonesError() {
         @Override
         public int getCode() {
-            return 0x1;
+            return 0;
         }
 
         @Override
         public String getMessage() {
-            return "While does not have a proper syntax";
-        }
-    };
-
-    /**
-     * Error 0x2:
-     * This error gets thrown every time the syntax does not follow
-     * any known specifications and the interpreter has no methods
-     * of understanding that line(s).
-     */
-    public static BonesError SYNTAX_UNKNOWN = new BonesError() {
-        @Override
-        public int getCode() {
-            return 0x2;
-        }
-
-        @Override
-        public String getMessage() {
-            return "Syntax unknown";
-        }
-    };
-
-    /**
-     * Error 0x3:
-     * This error gets thrown every time the user tries to use a variable
-     * without declaring it beforehand. This error may become deprecated
-     * in further versions.
-     */
-    public static BonesError NOT_CLEARED = new BonesError() {
-        @Override
-        public int getCode() {
-            return 0x3;
-        }
-
-        @Override
-        public String getMessage() {
-            return "Variable not cleared beforehand";
-        }
-    };
-
-    /**
-     * Error 0x4:
-     * This error gets thrown every time the user has written a
-     * "while" loop that has not "end;" statement as declared in the specification.
-     */
-    public static BonesError NO_END = new BonesError() {
-        @Override
-        public int getCode() {
-            return 0x4;
-        }
-
-        @Override
-        public String getMessage() {
-            return "One or more while's do not have an end";
-        }
-    };
-
-    /**
-     * Error 0x5:
-     * This error gets thrown every time the interpreter has been
-     * running for over 5000 milliseconds.
-     */
-    public static BonesError TIMEOUT = new BonesError() {
-        @Override
-        public int getCode() {
-            return 0x5;
-        }
-
-        @Override
-        public String getMessage() {
-            return "You might have an infinite while. Or some super code. Whatever. I won't interpret anymore.";
-        }
-    };
-
-    /**
-     * Error 0x6:
-     * This error gets thrown every time the user has used an "end;" statement
-     * without having a matching "while".
-     */
-    public static BonesError NO_START = new BonesError() {
-        @Override
-        public int getCode() {
-            return 0x6;
-        }
-
-        @Override
-        public String getMessage() {
-            return "You are trying to end a while that doesn't even exist";
+            return "One or more instructions are not being terminated correctly";
         }
     };
 }
