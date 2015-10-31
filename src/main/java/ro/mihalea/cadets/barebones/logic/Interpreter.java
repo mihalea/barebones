@@ -4,7 +4,6 @@ import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
-import ro.mihalea.cadets.barebones.logic.units.Fetcher;
 
 /**
  * Class in which all the backend logic takes place.
@@ -12,16 +11,12 @@ import ro.mihalea.cadets.barebones.logic.units.Fetcher;
  * and then act accordingly.
  */
 public class Interpreter {
-    /**
-     * Handles the raw instruction buffer
-     */
-    private Fetcher fetcher;
 
     /**
      * Instantiates the fields
      */
     public Interpreter() {
-        fetcher = new Fetcher();
+
     }
 
     /**
@@ -38,22 +33,4 @@ public class Interpreter {
             }
         };
     }
-
-    /**
-     * Clears all the variables and creates a new environment
-     */
-    public void clear() {
-        fetcher.clear();
-    }
-
-    public void addInstructions(String program)
-            throws NotTerminatedException, InvalidCharacterException {
-        fetcher.add(program);
-    }
-
-    public void decode() {
-
-    }
-
-
 }

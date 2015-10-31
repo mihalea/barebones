@@ -3,7 +3,7 @@ package ro.mihalea.cadets.barebones.logic.exceptions;
 /**
  * Model for the exceptions thrown by the interpreter
  */
-public class BonesException extends Exception {
+public abstract class BonesException extends Exception {
     /**
      * Final message defined by the developer describing the error
      */
@@ -20,7 +20,7 @@ public class BonesException extends Exception {
      * @param message Descriptive message to be shown to the user
      * @param line Line where the error got caught
      */
-    protected BonesException(String message, int line) {
+    public BonesException(String message, int line) {
         super(message);
         this.line = line;
         this.message = message;

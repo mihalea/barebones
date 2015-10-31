@@ -2,7 +2,7 @@ package ro.mihalea.cadets.barebones.logic.exceptions;
 
 /**
  * Exception thrown when one or more invalid characters
- * have been fed into the {@link ro.mihalea.cadets.barebones.logic.units.Fetcher}
+ * have been fed into the {@link ro.mihalea.cadets.barebones.logic.units.Decoder}
  * Regex tested against: ^[a-zA-Z0-9\\W]
  */
 public class InvalidCharacterException extends BonesException {

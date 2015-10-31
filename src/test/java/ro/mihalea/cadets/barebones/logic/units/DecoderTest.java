@@ -13,15 +13,15 @@ public class DecoderTest extends TestCase {
     }
 
     public void testUnknownInstruction() throws Exception {
-        Fetcher fetcher = new Fetcher();
-        assertNotNull(fetcher);
+        Sanitizer sanitizer = new Sanitizer();
+        assertNotNull(sanitizer);
 
         Decoder decoder = new Decoder();
         assertNotNull(decoder);
 
-        fetcher.add("incr x;");
-        assertTrue(decoder.decode(fetcher.fetch()));
+        sanitizer.add("incr x;");
+        assertTrue(decoder.decode(sanitizer.fetch()));
 
-        fetcher.add("incr x; unknown command");
+        sanitizer.add("incr x; unknown command");
     }
 }
