@@ -114,7 +114,7 @@ public class BonesPanel extends JPanel {
 
         textArea = new RSyntaxTextArea();
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
-        atmf.putMapping("text/barebones", "ro.mihalea.cadets.barebones.ui.BonesTokens");
+        atmf.putMapping("text/barebones", "ro.mihalea.cadets.barebones.ui.BonesSyntax");
         textArea.setSyntaxEditingStyle("text/barebones");
         RTextScrollPane scrollPane = new RTextScrollPane(textArea);
 

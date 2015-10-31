@@ -10,7 +10,7 @@ import javax.swing.text.Segment;
 /**
  * Created by mm8g15 on 10/5/2015.
  */
-public class BonesTokens extends AbstractTokenMaker {
+public class BonesSyntax extends AbstractTokenMaker {
     @Override
     public TokenMap getWordsToHighlight() {
         TokenMap tokenMap = new TokenMap();
