@@ -37,6 +37,7 @@ public class Processor {
      */
     public void load(List<InstructionInterface> instructions) {
         this.instructions = instructions;
+        memory.clear();
         programCounter = 0;
     }
 

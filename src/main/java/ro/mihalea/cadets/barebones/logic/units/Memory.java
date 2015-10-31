@@ -62,4 +62,11 @@ public class Memory {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         System.out.println();
     }
+
+    /**
+     * Clear the memory
+     */
+    public void clear() {
+        variables.clear();
+    }
 }
