@@ -25,6 +25,14 @@ public class Line {
         this.index = index;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Line)
+            return ((Line)obj).code.equals(this.code);
+        else
+            return false;
+    }
+
     public String getCode() {
         return code;
     }

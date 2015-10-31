@@ -88,4 +88,16 @@ public class Decoder {
 
         return null;
     }
+
+    /**
+     * Returns the exceptions generated for the last call of the {@link Decoder#decode(List)}
+     * @return List of BonesException
+     */
+    public List<BonesException> getExceptions() {
+        return exceptions;
+    }
+
+    public void setExceptions(List<BonesException> exceptions) {
+        this.exceptions = exceptions;
+    }
 }

@@ -1,6 +1,7 @@
-package ro.mihalea.cadets.barebones.logic;
+package ro.mihalea.cadets.barebones.logic.units;
 
 import junit.framework.TestCase;
+import ro.mihalea.cadets.barebones.logic.Line;
 import ro.mihalea.cadets.barebones.logic.units.Fetcher;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class FetcherTest extends TestCase {
         assertNotNull(fetcher);
 
         fetcher.add("incr x;");
-        List<String> instr = fetcher.fetch();
+        List<Line> instr = fetcher.fetch();
         assertEquals(1, instr.size());
         assertEquals("incr x", instr.get(0));
 
@@ -28,7 +29,7 @@ public class FetcherTest extends TestCase {
         assertNotNull(fetcher);
 
         fetcher.add("incr x; decr x;");
-        List<String> instr = fetcher.fetch();
+        List<Line> instr = fetcher.fetch();
         assertEquals(2, instr.size());
         assertEquals("incr x", instr.get(0));
         assertEquals("decr x", instr.get(1));
@@ -43,7 +44,7 @@ public class FetcherTest extends TestCase {
 
         fetcher.add("incr x;");
         fetcher.add("decr x; clear y;");
-        List<String> instr = fetcher.fetch();
+        List<Line> instr = fetcher.fetch();
         assertEquals(3, instr.size());
         assertEquals("incr x", instr.get(0));
         assertEquals("decr x", instr.get(1));
@@ -59,7 +60,7 @@ public class FetcherTest extends TestCase {
 
         fetcher.add("incr x; decr x;");
         fetcher.clear();
-        List<String> instr = fetcher.fetch();
+        List<Line> instr = fetcher.fetch();
         assertEquals(0, instr.size());
     }
 
@@ -69,7 +70,7 @@ public class FetcherTest extends TestCase {
 
         fetcher.clear();
         fetcher.add("decr x;");
-        List<String> instr = fetcher.fetch();
+        List<Line> instr = fetcher.fetch();
         assertEquals(1, instr.size());
         assertEquals("decr x", instr.get(0));
     }

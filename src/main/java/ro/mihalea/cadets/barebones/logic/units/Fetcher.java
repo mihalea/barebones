@@ -1,10 +1,15 @@
 package ro.mihalea.cadets.barebones.logic.units;
 
 import ro.mihalea.cadets.barebones.logic.Line;
+import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class that handles the raw instruction buffer
@@ -32,7 +37,7 @@ public class Fetcher {
      * Adds one or more lines to the raw instruction buffer
      * @param code One or more lines of code
      */
-    public void add(String code) throws NotTerminatedException{
+    public void add(String code) throws NotTerminatedException, InvalidCharacterException{
         String[] statements = code.split(";");
 
         /**
@@ -44,9 +49,20 @@ public class Fetcher {
             throw new NotTerminatedException(lineCount);
         for (String s : statements) {
             lineCount++;
-            if (!s.isEmpty())
-                //Trim surrounding whitespace
+            if (!s.isEmpty()) {
+                /**
+                 * Sanitize the line by removing unnseccessary whitespace
+                 * and testing against invalid characters
+                 */
+                String sanitized = String.join(" ", s.trim().split("\\W"));
+                Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\W]");
+                Matcher matcher = pattern.matcher(sanitized);
+
+                if(matcher.matches())
+                    throw new InvalidCharacterException(lineCount);
+
                 instructions.add(new Line(s.trim(), lineCount++));
+            }
         }
     }
 

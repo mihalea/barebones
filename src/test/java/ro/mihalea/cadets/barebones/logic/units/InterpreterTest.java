@@ -1,6 +1,8 @@
-package ro.mihalea.cadets.barebones.logic;
+package ro.mihalea.cadets.barebones.logic.units;
 
 import junit.framework.TestCase;
+import ro.mihalea.cadets.barebones.logic.Interpreter;
+import ro.mihalea.cadets.barebones.logic.Listener;
 
 /**
  * Created by mm8g15 on 06/10/2015.
