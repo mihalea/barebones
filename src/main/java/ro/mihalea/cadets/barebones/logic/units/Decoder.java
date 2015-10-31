@@ -1,6 +1,7 @@
 package ro.mihalea.cadets.barebones.logic.units;
 
 import ro.mihalea.cadets.barebones.logic.exceptions.*;
+import ro.mihalea.cadets.barebones.logic.instructions.Decrement;
 import ro.mihalea.cadets.barebones.logic.instructions.Increment;
 import ro.mihalea.cadets.barebones.logic.instructions.InstructionInterface;
 
@@ -90,7 +91,7 @@ public class Decoder {
             case "incr":
                 return new Increment().decode(heap);
             case "decr":
-                break;
+                return new Decrement().decode(heap);
             case "clear":
                 break;
             case "while":

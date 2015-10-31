@@ -1,27 +1,87 @@
 package ro.mihalea.cadets.barebones.logic.units;
 
 import junit.framework.TestCase;
+import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
+import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
+import ro.mihalea.cadets.barebones.logic.instructions.Decrement;
+import ro.mihalea.cadets.barebones.logic.instructions.Increment;
+import ro.mihalea.cadets.barebones.logic.instructions.InstructionInterface;
 
+import java.util.List;
 
 /**
  * Created by Mircea on 31-Oct-15.
  */
 public class DecoderTest extends TestCase {
-    public void testCreation() throws Exception {
+
+    public void testAddSingleStatement() throws Exception {
         Decoder decoder = new Decoder();
         assertNotNull(decoder);
+
+        decoder.append("incr x;");
+        assertTrue(decoder.canFetch());
+        List<InstructionInterface> instr = decoder.fetch();
+        assertEquals(1, instr.size());
+        assertTrue(instr.get(0) instanceof Increment);
+
+        instr = decoder.fetch();
+        assertEquals(0, instr.size());
     }
 
-    public void testUnknownInstruction() throws Exception {
-        Sanitizer sanitizer = new Sanitizer();
-        assertNotNull(sanitizer);
-
+    public void testSameLineStatements() throws Exception {
         Decoder decoder = new Decoder();
         assertNotNull(decoder);
 
-        sanitizer.add("incr x;");
-        assertTrue(decoder.decode(sanitizer.fetch()));
+        decoder.append("incr x; incr x;");
+        assertTrue(decoder.canFetch());
+        List<InstructionInterface> instr = decoder.fetch();
+        assertEquals(2, instr.size());
+        assertTrue(instr.get(0) instanceof Increment);
+        assertTrue(instr.get(1) instanceof Decrement);
 
-        sanitizer.add("incr x; unknown command");
+        assertEquals(0, decoder.fetch().size());
+    }
+
+    public void testMultipleLines() throws Exception {
+        Decoder decoder = new Decoder();
+        assertNotNull(decoder);
+
+        decoder.append("incr x;");
+        decoder.append("decr x; incr y;");
+        assertTrue(decoder.canFetch());
+        List<InstructionInterface> instr = decoder.fetch();
+        assertEquals(3, instr.size());
+        assertTrue(instr.get(0) instanceof Increment);
+        assertTrue(instr.get(1) instanceof Decrement);
+        assertTrue(instr.get(2) instanceof Increment);
+
+        assertTrue(decoder.canFetch());
+        assertEquals(0, decoder.fetch().size());
+    }
+
+    public void testNotTerminated() throws Exception {
+        Decoder decoder = new Decoder();
+        assertNotNull(decoder);
+
+        try {
+            decoder.append("incr x;");
+            decoder.append("decr y");
+            decoder.append("decr x; incr y");
+        } catch (NotTerminatedException e) {
+            System.out.println("Good");
+        }
+    }
+
+    public void testInvalidCharacter() throws Exception {
+        Decoder decoder = new Decoder();
+        assertNotNull(decoder);
+
+        try {
+            decoder.append("incr x; decr x2;");
+            decoder.append("incr sf#;");
+        } catch (InvalidCharacterException e) {
+            System.out.println("Good");
+        }
     }
 }
