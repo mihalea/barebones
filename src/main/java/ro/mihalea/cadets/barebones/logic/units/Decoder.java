@@ -1,10 +1,7 @@
 package ro.mihalea.cadets.barebones.logic.units;
 
 import ro.mihalea.cadets.barebones.logic.exceptions.*;
-import ro.mihalea.cadets.barebones.logic.instructions.Clear;
-import ro.mihalea.cadets.barebones.logic.instructions.Decrement;
-import ro.mihalea.cadets.barebones.logic.instructions.Increment;
-import ro.mihalea.cadets.barebones.logic.instructions.InstructionInterface;
+import ro.mihalea.cadets.barebones.logic.instructions.*;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -22,7 +19,7 @@ public class Decoder {
     /**
      * Decoded instruction buffer waiting to be sent to {@link Processor}
      */
-    private final List<InstructionInterface> instructions;
+    private final List<BaseInstruction> instructions;
 
     /**
      * Instantiates the fields
@@ -35,8 +32,8 @@ public class Decoder {
      * Appends one or more lines of instructions to the current buffer
      * @param code One or more instructions
      */
-    public void append(String code)throws NotTerminatedException,
-            InvalidCharacterException, UnknownInstructionException {
+    public void append(String code) throws NotTerminatedException, InvalidCharacterException,
+            UnknownInstructionException, InvalidSyntaxException {
         String[] statements = code.split(";");
         int lineCount = 0;
 
@@ -61,42 +58,44 @@ public class Decoder {
                     if(matcher.find())
                         throw new InvalidCharacterException(lineCount);
 
-                    instructions.add(this.decode(sanitized, lineCount));
+                    try {
+                        instructions.add(this.decode(sanitized, lineCount));
+                    } catch (UnknownInstructionException|InvalidSyntaxException e) {
+                        e.setLine(lineCount);
+                        throw e;
+                    }
                 }
             }
 
     }
 
     /**
-     * Decodes one instruction and creates it's corresponding {@link InstructionInterface}
+     * Decodes one instruction and creates it's corresponding {@link BaseInstruction}
      * @param rawInstruction One raw instruction
-     * @return Matching {@link InstructionInterface} implementation
+     * @return Matching {@link BaseInstruction} implementation
      */
-    private InstructionInterface decode(final String rawInstruction, final int lineIndex)
-            throws UnknownInstructionException {
+    private BaseInstruction decode(final String rawInstruction, final int lineIndex)
+            throws UnknownInstructionException, InvalidSyntaxException {
         /**
-         * Adding a reversed list to a stack basically makes
-         * it a heap, therefore the confusing naming in the declaration
+         * Adds all the tokes to a LinkedList (which implements Queue)
          */
-        Stack<String> heap = new Stack<>();
-        List<String> list = Arrays.asList(rawInstruction.split("\\W"));
-        Collections.reverse(list);
-        heap.addAll(list);
+        LinkedList<String> arguments = new LinkedList<>();
+        arguments.addAll(Arrays.asList(rawInstruction.split("\\W")));
 
 
         /**
          * First token is the instruction code
          */
-        String instruction = heap.pop();
+        String instruction = arguments.pop();
         switch(instruction) {
             case "incr":
-                return new Increment().decode(heap);
+                return new Increment().decode(arguments);
             case "decr":
-                return new Decrement().decode(heap);
+                return new Decrement().decode(arguments);
             case "clear":
-                return new Clear().decode(heap);
+                return new Clear().decode(arguments);
             case "copy":
-                break;
+                return new Copy().decode(arguments);
             case "init":
                 break;
             case "while":
@@ -120,10 +119,10 @@ public class Decoder {
         return true;
     }
 
-    public List<InstructionInterface> fetch() throws BlockNotClosedException {
+    public List<BaseInstruction> fetch() throws BlockNotClosedException {
         if(!canFetch())
             throw new BlockNotClosedException(-1);
-        List<InstructionInterface> returned = new ArrayList<>(instructions);
+        List<BaseInstruction> returned = new ArrayList<>(instructions);
         instructions.clear();
         return returned;
     }

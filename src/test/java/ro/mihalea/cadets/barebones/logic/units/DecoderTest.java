@@ -5,7 +5,7 @@ import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
 import ro.mihalea.cadets.barebones.logic.instructions.Decrement;
 import ro.mihalea.cadets.barebones.logic.instructions.Increment;
-import ro.mihalea.cadets.barebones.logic.instructions.InstructionInterface;
+import ro.mihalea.cadets.barebones.logic.instructions.BaseInstruction;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class DecoderTest extends TestCase {
 
         decoder.append("incr x;");
         assertTrue(decoder.canFetch());
-        List<InstructionInterface> instr = decoder.fetch();
+        List<BaseInstruction> instr = decoder.fetch();
         assertEquals(1, instr.size());
         assertTrue(instr.get(0) instanceof Increment);
 
@@ -34,7 +34,7 @@ public class DecoderTest extends TestCase {
 
         decoder.append("incr x; decr x;");
         assertTrue(decoder.canFetch());
-        List<InstructionInterface> instr = decoder.fetch();
+        List<BaseInstruction> instr = decoder.fetch();
         assertEquals(2, instr.size());
         assertTrue(instr.get(0) instanceof Increment);
         assertTrue(instr.get(1) instanceof Decrement);
@@ -49,7 +49,7 @@ public class DecoderTest extends TestCase {
         decoder.append("incr x;");
         decoder.append("decr x; incr y;");
         assertTrue(decoder.canFetch());
-        List<InstructionInterface> instr = decoder.fetch();
+        List<BaseInstruction> instr = decoder.fetch();
         assertEquals(3, instr.size());
         assertTrue(instr.get(0) instanceof Increment);
         assertTrue(instr.get(1) instanceof Decrement);

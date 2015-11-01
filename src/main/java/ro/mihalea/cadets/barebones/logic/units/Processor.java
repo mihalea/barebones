@@ -1,6 +1,6 @@
 package ro.mihalea.cadets.barebones.logic.units;
 
-import ro.mihalea.cadets.barebones.logic.instructions.InstructionInterface;
+import ro.mihalea.cadets.barebones.logic.instructions.BaseInstruction;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public class Processor {
     /**
      * List of instructions waiting to be executed
      */
-    private List<InstructionInterface> instructions;
+    private List<BaseInstruction> instructions;
 
     /**
      * Index of the current line
@@ -35,7 +35,7 @@ public class Processor {
      * Loads a new list of instructions
      * @param instructions Decoded instructions
      */
-    public void load(List<InstructionInterface> instructions) {
+    public void load(List<BaseInstruction> instructions) {
         this.instructions = instructions;
         memory.clear();
         programCounter = 0;

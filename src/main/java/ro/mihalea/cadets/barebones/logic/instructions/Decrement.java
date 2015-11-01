@@ -4,13 +4,14 @@ import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * Instruction that decrements a list of variables
+ * Sytnax: decr variables...
  */
-public class Decrement implements InstructionInterface {
+public class Decrement extends BaseInstruction {
     /**
      * List of variables to be decremented
      */
@@ -45,7 +46,7 @@ public class Decrement implements InstructionInterface {
      * @return The same object
      */
     @Override
-    public InstructionInterface decode(Stack<String> args) {
+    public BaseInstruction decode(LinkedList<String> args) {
         variables = new ArrayList<>(args);
         return this;
     }

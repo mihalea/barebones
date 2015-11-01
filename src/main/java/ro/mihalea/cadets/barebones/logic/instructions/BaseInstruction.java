@@ -1,25 +1,29 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
+import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
-import java.util.Stack;
+import java.util.LinkedList;
 
 /**
  * Base model for all the decoded instructions
  */
-public interface InstructionInterface {
+public abstract class BaseInstruction {
+    protected String NAME_REGEX = "[a-zA-Z]+";
+
     /**
      * Executes the instruction and returns the next program counter
      * @param programCounter Current program counter
      * @param memory Memory handler
      * @return Next program counter
      */
-    int execute(int programCounter, Memory memory);
+    public abstract int execute(int programCounter, Memory memory) throws NoValueAssignedException;
 
     /**
      * Creates the instruction based on the arguments provided
      * @param args Arguments to be handled by the instruction
      * @return Final instruction
      */
-    InstructionInterface decode(Stack<String> args);
+    public abstract BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException;
 }

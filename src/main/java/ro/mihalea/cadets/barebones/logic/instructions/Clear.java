@@ -3,12 +3,13 @@ package ro.mihalea.cadets.barebones.logic.instructions;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.HashSet;
-import java.util.Stack;
+import java.util.LinkedList;
 
 /**
  * Instruction that sets a list of variables to 0
+ * Syntax: clear variables...
  */
-public class Clear implements InstructionInterface {
+public class Clear extends BaseInstruction {
     /**
      * List of variables to be decremented
      */
@@ -35,7 +36,7 @@ public class Clear implements InstructionInterface {
      * @return The same object
      */
     @Override
-    public InstructionInterface decode(Stack<String> args) {
+    public BaseInstruction decode(LinkedList<String> args) {
         variables = new HashSet<>(args);
         return this;
     }
