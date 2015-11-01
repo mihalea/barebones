@@ -1,7 +1,6 @@
 package ro.mihalea.cadets.barebones.logic.units;
 
 import junit.framework.TestCase;
-import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
 import ro.mihalea.cadets.barebones.logic.instructions.Decrement;

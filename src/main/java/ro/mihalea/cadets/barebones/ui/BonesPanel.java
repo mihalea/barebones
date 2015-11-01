@@ -71,7 +71,7 @@ public class BonesPanel extends JPanel {
 
                 for (Listener li : listeners) {
                     EventResponse response = li.interpret(code);
-                    StringBuffer output = new StringBuffer();
+                    StringBuilder output = new StringBuilder();
 
                     if(response instanceof ResultResponse) {
                         ResultResponse result = (ResultResponse) response;
@@ -91,10 +91,9 @@ public class BonesPanel extends JPanel {
 
 
                     }
-                    output.append("Memory used: " +
-                            (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
-                                    / 1024 / 1024 + " MB\n");
-                    output.append("CPU time: " + response.timeElapsed + " ms");
+                    output.append("Memory used: ").append((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
+                            / 1024 / 1024).append(" MB\n")
+                    output.append("CPU time: ").append(response.timeElapsed).append(" ms");
 
                     messageArea.setText(output.toString());
                 }

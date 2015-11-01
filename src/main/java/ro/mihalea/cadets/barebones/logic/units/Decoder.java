@@ -22,7 +22,7 @@ public class Decoder {
     /**
      * Decoded instruction buffer waiting to be sent to {@link Processor}
      */
-    private List<InstructionInterface> instructions;
+    private final List<InstructionInterface> instructions;
 
     /**
      * Instantiates the fields

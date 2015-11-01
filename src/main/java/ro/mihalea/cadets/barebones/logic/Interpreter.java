@@ -2,7 +2,6 @@ package ro.mihalea.cadets.barebones.logic;
 
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
-import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
 import ro.mihalea.cadets.barebones.logic.units.Decoder;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
@@ -15,8 +14,8 @@ import ro.mihalea.cadets.barebones.logic.units.Processor;
  */
 public class Interpreter {
 
-    private Decoder decoder;
-    private Processor processor;
+    private final Decoder decoder;
+    private final Processor processor;
 
     /**
      * Instantiates the fields

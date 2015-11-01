@@ -10,7 +10,7 @@ public class ResultResponse extends EventResponse {
      * Map holding all the variables used by the interpreter
      * with all of their final values.
      */
-    public HashMap<String, Long> vars;
+    public final HashMap<String, Long> vars;
 
     /**
      * Creates a response that signals that the interpreter has finished

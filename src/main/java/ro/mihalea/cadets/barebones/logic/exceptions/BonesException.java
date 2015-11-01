@@ -7,12 +7,12 @@ public abstract class BonesException extends Exception {
     /**
      * Final message defined by the developer describing the error
      */
-    protected final String message;
+    private final String message;
 
     /**
      * Line where the error got thrown
      */
-    protected int line;
+    private int line;
 
     /**
      * Protected constructor so that only subclasses can directly create

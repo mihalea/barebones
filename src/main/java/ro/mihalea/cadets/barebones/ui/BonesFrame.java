@@ -23,11 +23,6 @@ public class BonesFrame extends JFrame {
     private final int HEIGHT = 600;
 
     /**
-     * Panel which contains all the GUI elements
-     */
-    private final BonesPanel panel;
-
-    /**
      * List of listeners for the GUI thread
      */
     private final List<Listener> listeners;
@@ -44,11 +39,11 @@ public class BonesFrame extends JFrame {
 
         listeners = new ArrayList<>();
 
-        this.setContentPane(panel = new BonesPanel(this, listeners));
+        this.setContentPane(new BonesPanel(this, listeners));
 
         this.pack();
         this.setSize(WIDTH, HEIGHT);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         //Center the window by setting to relative location
         this.setLocationRelativeTo(null);
         this.setVisible(true);

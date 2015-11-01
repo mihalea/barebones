@@ -1,15 +1,12 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
-import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Stack;
 
 /**
- * Created by Mircea on 31-Oct-15.
+ * Instruction that sets a list of variables to 0
  */
 public class Clear implements InstructionInterface {
     /**

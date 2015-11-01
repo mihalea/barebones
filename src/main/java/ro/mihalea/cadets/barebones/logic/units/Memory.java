@@ -12,7 +12,7 @@ public class Memory {
     /**
      * HashMap containing the values for all the variables used in the current run
      */
-    private HashMap<String, Long> variables;
+    private final HashMap<String, Long> variables;
 
     /**
      * Instantiating the field

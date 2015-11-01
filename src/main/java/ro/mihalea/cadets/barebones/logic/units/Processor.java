@@ -54,7 +54,7 @@ public class Processor {
 
     /**
      * Runs the next instruction in the instruction set
-     * @return
+     * @return Returns the final state of the variables
      */
     public Memory next() {
         programCounter = instructions.get(programCounter).execute(programCounter, memory);

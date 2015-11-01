@@ -9,7 +9,7 @@ public class ErrorResponse extends EventResponse {
     /**
      * Error sent to the listeners.
      */
-    public BonesException exception;
+    public final BonesException exception;
 
     /**
      * Line on which the error got caught

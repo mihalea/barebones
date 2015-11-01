@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * Created by Mircea on 31-Oct-15.
+ * Instruction that increments a list of variables
  */
 public class Increment implements InstructionInterface {
     /**
