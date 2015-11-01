@@ -1,11 +1,14 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
+import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidVariableNameException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Instruction that increments a list of variables
@@ -17,6 +20,10 @@ public class Increment extends BaseInstruction {
      */
     private List<String> variables;
 
+
+    public Increment() {
+        variables = new ArrayList<>();
+    }
 
     /**
      * Increases the variable by one if set, otherwise sets it to 1
@@ -47,8 +54,14 @@ public class Increment extends BaseInstruction {
      * @return The same object
      */
     @Override
-    public BaseInstruction decode(LinkedList<String> args) {
-        variables = new ArrayList<>(args);
+    public BaseInstruction decode(LinkedList<String> args) throws InvalidVariableNameException {
+        for(String arg : args) {
+            if (!Pattern.matches(NAME_REGEX, arg))
+                throw new InvalidVariableNameException(-1);
+
+            variables.add(arg);
+        }
+
         return this;
     }
 }

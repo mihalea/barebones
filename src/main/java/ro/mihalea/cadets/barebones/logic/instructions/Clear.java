@@ -1,9 +1,11 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidVariableNameException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 
 /**
  * Instruction that sets a list of variables to 0
@@ -36,8 +38,13 @@ public class Clear extends BaseInstruction {
      * @return The same object
      */
     @Override
-    public BaseInstruction decode(LinkedList<String> args) {
-        variables = new HashSet<>(args);
+    public BaseInstruction decode(LinkedList<String> args) throws InvalidVariableNameException {
+        for(String arg : args) {
+            if (!Pattern.matches(NAME_REGEX, arg))
+                throw new InvalidVariableNameException(-1);
+
+            variables.add(arg);
+        }
         return this;
     }
 }

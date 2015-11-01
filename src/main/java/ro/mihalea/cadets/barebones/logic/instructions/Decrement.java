@@ -1,11 +1,13 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidVariableNameException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Instruction that decrements a list of variables
@@ -46,8 +48,13 @@ public class Decrement extends BaseInstruction {
      * @return The same object
      */
     @Override
-    public BaseInstruction decode(LinkedList<String> args) {
-        variables = new ArrayList<>(args);
+    public BaseInstruction decode(LinkedList<String> args) throws InvalidVariableNameException {
+        for(String arg : args) {
+            if (!Pattern.matches(NAME_REGEX, arg))
+                throw new InvalidVariableNameException(-1);
+
+            variables.add(arg);
+        }
         return this;
     }
 }
