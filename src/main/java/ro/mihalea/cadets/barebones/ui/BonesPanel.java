@@ -92,7 +92,7 @@ public class BonesPanel extends JPanel {
 
                     }
                     output.append("Memory used: ").append((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
-                            / 1024 / 1024).append(" MB\n")
+                            / 1024 / 1024).append(" MB\n");
                     output.append("CPU time: ").append(response.timeElapsed).append(" ms");
 
                     messageArea.setText(output.toString());
