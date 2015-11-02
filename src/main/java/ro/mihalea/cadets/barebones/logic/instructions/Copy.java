@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 /**
  * Instruction that copies the value of one variable to a list of value
- * Syntax: copy source > dest...
+ * Syntax: copy [source] to [dest...]
  */
 public class Copy extends BaseInstruction {
     /**
@@ -27,7 +27,13 @@ public class Copy extends BaseInstruction {
     List<String> dest = new ArrayList<>();
 
 
-
+    /**
+     * Sets the value of all the variables in dest to the value of source
+     * @param programCounter Current program counter
+     * @param memory Memory handler
+     * @return Next consectuive instruction
+     * @throws NotAssignedException The source variable has not been assigned a value prior to execution
+     */
     @Override
     public int execute(int programCounter, Memory memory) throws NotAssignedException {
         long sourceValue = memory.get(source);
@@ -36,6 +42,13 @@ public class Copy extends BaseInstruction {
         return programCounter + 1;
     }
 
+    /**
+     * Decodes the arguments according to
+     * @param args Arguments to be handled by the instruction
+     * @return The same method used for chaining
+     * @throws InvalidSyntaxException Instruction does not follow the imposed syntax
+     * @throws InvalidNamingException One or more variables do not follow the naming specification
+     */
     @Override
     public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException {
         if(args.size() < 3)

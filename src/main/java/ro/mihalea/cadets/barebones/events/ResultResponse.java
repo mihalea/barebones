@@ -2,8 +2,6 @@ package ro.mihalea.cadets.barebones.events;
 
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
-import java.util.HashMap;
-
 /**
  * Response that signal successful interpretation
  */

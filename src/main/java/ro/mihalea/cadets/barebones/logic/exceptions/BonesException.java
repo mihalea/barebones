@@ -25,6 +25,10 @@ public abstract class BonesException extends Exception {
         this.line = line;
     }
 
+    /**
+     * Retunrns the error message and additional info if there is any provided
+     * @return Error message with optional info
+     */
     @Override
     public String getMessage() {
         return message + (additional.isEmpty() ? "" : ": " + additional);

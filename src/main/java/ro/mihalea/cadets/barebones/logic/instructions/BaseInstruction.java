@@ -32,9 +32,14 @@ public abstract class BaseInstruction {
     public abstract int execute(int programCounter, Memory memory) throws NotAssignedException;
 
     /**
+     * /**
      * Creates the instruction based on the arguments provided
      * @param args Arguments to be handled by the instruction
      * @return Final instruction
+
+     * @throws InvalidSyntaxException Syntax does not follow the specification
+     * @throws InvalidNamingException One or more variables do not follow the naming specification
+     * @throws ExpectedNumberException Expected a number instead of a variable name
      */
     public abstract BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException, ExpectedNumberException;
 }

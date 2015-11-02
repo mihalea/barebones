@@ -4,11 +4,18 @@ import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 /**
- * Created by Mircea on 02-Nov-15.
+ * Base introduction for all the block instructions that need a pairing instruction
  */
 public abstract class BlockInstruction extends BaseInstruction {
+    /**
+     * Line index of the pair
+     */
     protected int pairIndex = -1;
 
+    /**
+     * Sets the line index of the pair
+     * @param pairIndex Line index of the pair
+     */
     public void setPairIndex(int pairIndex) {
         this.pairIndex = pairIndex;
     }

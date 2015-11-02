@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 /**
  * Instruction that decrements a list of variables
- * Sytnax: decr variables...
+ * Sytnax: decr [variables...]
  */
 public class Decrement extends BaseInstruction {
     /**
@@ -47,6 +47,7 @@ public class Decrement extends BaseInstruction {
      * Assumes all the arguments parsed are variable names
      * @param args Arguments to be handled by the instruction
      * @return The same object
+     * @throws InvalidNamingException One or more variables do not follow the naming specification
      */
     @Override
     public BaseInstruction decode(LinkedList<String> args) throws InvalidNamingException {

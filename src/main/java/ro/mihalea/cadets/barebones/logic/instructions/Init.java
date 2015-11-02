@@ -10,14 +10,28 @@ import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 /**
- * Created by Mircea on 02-Nov-15.
+ * Instruction that sets a single variable to a value
+ * Syntax: init [variable] = [value]
  */
 public class Init extends BaseInstruction {
+    /**
+     * Variable to be set
+     */
     private String variable;
+
+    /**
+     * Value which will be put into the variable
+     */
     private long value;
 
+    /**
+     * Sets the variable to the provided value
+     * @param programCounter Current program counter
+     * @param memory Memory handler
+     * @return The next consecutive program counter
+     */
     @Override
-    public int execute(int programCounter, Memory memory) throws NotAssignedException {
+    public int execute(int programCounter, Memory memory)  {
         memory.set(variable, value);
         return programCounter + 1;
     }
@@ -36,7 +50,7 @@ public class Init extends BaseInstruction {
             throw new InvalidSyntaxException();
 
         String rawValue = args.pop();
-        if(!Pattern.matches(REGEX_NAME, variable))
+        if(!Pattern.matches(REGEX_NUM, variable))
             throw new ExpectedNumberException(rawValue);
 
         value = Long.parseLong(rawValue);

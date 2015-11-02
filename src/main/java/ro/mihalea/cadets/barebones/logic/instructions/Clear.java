@@ -10,11 +10,11 @@ import java.util.regex.Pattern;
 
 /**
  * Instruction that sets a list of variables to 0
- * Syntax: clear variables...
+ * Syntax: clear [variables...]
  */
 public class Clear extends BaseInstruction {
     /**
-     * List of variables to be decremented
+     * List of variables to be cleared
      */
     private HashSet<String> variables = new HashSet<>();
 
@@ -26,9 +26,8 @@ public class Clear extends BaseInstruction {
      */
     @Override
     public int execute(int programCounter, Memory memory) {
-        for(String var : variables) {
+        for(String var : variables)
                 memory.set(var, 0);
-        }
 
         return programCounter + 1;
     }
@@ -36,7 +35,8 @@ public class Clear extends BaseInstruction {
     /**
      * Assumes all the arguments parsed are variable names
      * @param args Arguments to be handled by the instruction
-     * @return The same object
+     * @return The same object used for chaining methods
+     * @throws InvalidNamingException Variables do not follow the naming specification
      */
     @Override
     public BaseInstruction decode(LinkedList<String> args) throws InvalidNamingException {

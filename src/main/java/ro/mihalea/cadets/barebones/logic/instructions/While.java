@@ -10,12 +10,28 @@ import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 /**
- * Created by Mircea on 02-Nov-15.
+ * Instruction which decides at every iteration based on the terms if it should execute the block inside
  */
 public class While extends BlockInstruction {
+    /**
+     * Left term of the while is expected to be a variable
+     */
     private String leftTerm;
+
+    /**
+     * Right term of the while is expected to be a variable or a number
+     */
     private String rightTerm;
 
+    /**
+     * Retrieves the value of both terms and then depending on the comparison it decides whether
+     * to do one more iteration
+     * @param programCounter Current program counter
+     * @param memory Memory handler
+     * @return The next consecutive program counter, if the variables are the same, or the next one after
+     * the matching end instruction if they differ
+     * @throws NotAssignedException
+     */
     @Override
     public int execute(int programCounter, Memory memory) throws NotAssignedException {
         long lValue = memory.get(leftTerm);
@@ -34,6 +50,14 @@ public class While extends BlockInstruction {
         return lValue == rValue ? pairIndex + 1 : programCounter + 1;
     }
 
+    /**
+     * The first argument is expected to be a variable name, while the second one may be a variable name
+     * or a whole number
+     * @param args Arguments to be handled by the instruction
+     * @return Same instruction
+     * @throws InvalidSyntaxException
+     * @throws InvalidNamingException
+     */
     @Override
     public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException {
         leftTerm = args.pop();
