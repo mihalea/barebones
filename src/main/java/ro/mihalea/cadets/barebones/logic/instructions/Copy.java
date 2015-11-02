@@ -45,7 +45,7 @@ public class Copy extends BaseInstruction {
         if(!Pattern.matches(REGEX_NAME, source))
             throw new InvalidNamingException(source);
 
-        if(!args.pop().equals(">"))
+        if(!args.pop().equals("to"))
             throw new InvalidSyntaxException();
 
         for(String arg : args) {
