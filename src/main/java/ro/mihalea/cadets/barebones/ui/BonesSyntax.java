@@ -11,6 +11,8 @@ import javax.swing.text.Segment;
  * Created by mm8g15 on 10/5/2015.
  */
 public class BonesSyntax extends AbstractTokenMaker {
+    private boolean tryEnd = false;
+
     @Override
     public TokenMap getWordsToHighlight() {
         TokenMap tokenMap = new TokenMap();
@@ -22,6 +24,10 @@ public class BonesSyntax extends AbstractTokenMaker {
         tokenMap.put("not", Token.RESERVED_WORD);
         tokenMap.put("do", Token.RESERVED_WORD);
         tokenMap.put("end", Token.RESERVED_WORD);
+        tokenMap.put("clear", Token.RESERVED_WORD);
+        tokenMap.put("init", Token.RESERVED_WORD);
+        tokenMap.put("copy", Token.RESERVED_WORD);
+        tokenMap.put("to", Token.RESERVED_WORD);
 
 
 
@@ -106,6 +112,7 @@ public class BonesSyntax extends AbstractTokenMaker {
                     } // End of switch (c).
 
                     break;
+
 
                 case Token.WHITESPACE:
 
@@ -227,10 +234,34 @@ public class BonesSyntax extends AbstractTokenMaker {
                     break;
 
                 case Token.COMMENT_EOL:
-                    i = end - 1;
-                    addToken(text, currentTokenStart,i, currentTokenType, newStartOffset+currentTokenStart);
-                    // We need to set token type to null so at the bottom we don't add one more token.
-                    currentTokenType = Token.NULL;
+                    switch (c) {
+                        case ':':
+                            currentTokenType = Token.COMMENT_MULTILINE;
+                            break;
+                        default:
+                            i = end - 1;
+                            addToken(text, currentTokenStart,i, currentTokenType, newStartOffset+currentTokenStart);
+                            // We need to set token type to null so at the bottom we don't add one more token.
+                            currentTokenType = Token.NULL;
+                            break;
+                    }
+                    break;
+
+                case Token.COMMENT_MULTILINE:
+                    switch(c) {
+                        case ':':
+                            tryEnd = true;
+                            break;
+                        case '#':
+                            if(tryEnd) {
+                                addToken(text, currentTokenStart, i, currentTokenType, newStartOffset + currentTokenStart);
+                                currentTokenType = Token.NULL;
+                            }
+                            break;
+                        default:
+                            tryEnd = false;
+                            break;
+                    }
                     break;
 
                 case Token.LITERAL_STRING_DOUBLE_QUOTE:
@@ -286,6 +317,10 @@ public class BonesSyntax extends AbstractTokenMaker {
             // Remember what token type to begin the next line with.
             case Token.LITERAL_STRING_DOUBLE_QUOTE:
                 addToken(text, currentTokenStart,end-1, currentTokenType, newStartOffset+currentTokenStart);
+                break;
+
+            case Token.COMMENT_MULTILINE:
+                addToken(text, currentTokenStart, end-1, currentTokenType, newStartOffset+currentTokenStart);
                 break;
 
             // Do nothing if everything was okay.
