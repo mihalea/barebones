@@ -32,8 +32,8 @@ public class Decoder {
      * Appends one or more lines of instructions to the current buffer
      * @param code One or more instructions
      */
-    public void append(String code) throws NotTerminatedException, InvalidCharacterException,
-            UnknownInstructionException, InvalidSyntaxException {
+    public void append(String code) throws BlockUnfinishedException, InvalidCharacterException,
+            UnknownInstructionException, InvalidSyntaxException, InvalidNamingException {
         String[] statements = code.split(";");
         int lineCount = 0;
 
@@ -43,7 +43,7 @@ public class Decoder {
          * one statement has not been correctly terminated
          */
         if(code.trim().charAt(code.length() - 1) != ';')
-            throw new NotTerminatedException(statements.length);
+            throw new BlockUnfinishedException(statements.length);
         else
             for (String statement : statements) {
                 lineCount++;
@@ -75,7 +75,7 @@ public class Decoder {
      * @return Matching {@link BaseInstruction} implementation
      */
     private BaseInstruction decode(final String rawInstruction, final int lineIndex)
-            throws UnknownInstructionException, InvalidSyntaxException {
+            throws UnknownInstructionException, InvalidSyntaxException, InvalidNamingException {
         /**
          * Adds all the tokes to a LinkedList (which implements Queue)
          */
@@ -119,9 +119,9 @@ public class Decoder {
         return true;
     }
 
-    public List<BaseInstruction> fetch() throws BlockNotClosedException {
+    public List<BaseInstruction> fetch() throws BlockUnfinishedException {
         if(!canFetch())
-            throw new BlockNotClosedException(-1);
+            throw new BlockUnfinishedException();
         List<BaseInstruction> returned = new ArrayList<>(instructions);
         instructions.clear();
         return returned;

@@ -3,7 +3,7 @@ package ro.mihalea.cadets.barebones.logic.units;
 import junit.framework.TestCase;
 import ro.mihalea.cadets.barebones.logic.Interpreter;
 import ro.mihalea.cadets.barebones.logic.Listener;
-import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
 
 /**
  * Created by mm8g15 on 06/10/2015.
@@ -18,7 +18,7 @@ public class InterpreterTest extends TestCase {
         assertNotNull(listener);
     }
 
-    public void testIncrement() throws NoValueAssignedException {
+    public void testIncrement() throws NotAssignedException {
         Interpreter interpreter = new Interpreter();
         Memory memory = interpreter.run("incr x;");
         assertEquals(1, memory.get("x"));
@@ -35,7 +35,7 @@ public class InterpreterTest extends TestCase {
         assertEquals(1, memory.get("y"));
     }
 
-    public void testDecrement() throws NoValueAssignedException{
+    public void testDecrement() throws NotAssignedException{
         Interpreter interpreter = new Interpreter();
         Memory memory = interpreter.run("decr x;");
         assertEquals(-1, memory.get("x"));
@@ -52,7 +52,7 @@ public class InterpreterTest extends TestCase {
         assertEquals(-1, memory.get("y"));
     }
 
-    public void testClear() throws NoValueAssignedException {
+    public void testClear() throws NotAssignedException {
         Interpreter interpreter = new Interpreter();
         Memory memory = interpreter.run("decr x; clear x;");
         assertEquals(0, memory.get("x"));

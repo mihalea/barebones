@@ -1,16 +1,19 @@
 package ro.mihalea.cadets.barebones.logic.exceptions;
 
-/**
- * Exception thrown when the first identifier is not a recognized keyword
- */
 public class UnknownInstructionException extends BonesException {
-    /**
-     * Protected constructor so that only subclasses can directly create
-     * an instance of this class
-     *
-     * @param line    Line where the error got caught
-     */
+    public UnknownInstructionException() {
+        this("", -1);
+    }
+
+    public UnknownInstructionException(String additional) {
+        this(additional, -1);
+    }
+
     public UnknownInstructionException(int line) {
-        super("Unknown instruction", line);
+        this("", line);
+    }
+
+    public UnknownInstructionException(String additional, int line) {
+        super("Variable does not meet the naming restrictions", additional, line);
     }
 }

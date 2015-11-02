@@ -7,28 +7,30 @@ public abstract class BonesException extends Exception {
     /**
      * Final message defined by the developer describing the error
      */
-    private final String message;
+    private String message;
+
+    /**
+     * Additional info provided on a case by case basis
+     */
+    private String additional;
 
     /**
      * Line where the error got thrown
      */
-    private int line;
+    private int line = -1;
 
-    /**
-     * Protected constructor so that only subclasses can directly create
-     * an instance of this class
-     * @param message Descriptive message to be shown to the user
-     * @param line Line where the error got caught
-     */
-    public BonesException(String message, int line) {
-        super(message);
-        this.line = line;
+    public BonesException(String message, String additional, int line) {
         this.message = message;
+        this.additional = additional;
+        this.line = line;
     }
 
-    @Override
     public String getMessage() {
-        return message;
+        return message + (additional.isEmpty() ? "" : ": " + additional);
+    }
+
+    protected void setMessage(String message) {
+        this.message = message;
     }
 
     public int getLine() {
@@ -37,5 +39,9 @@ public abstract class BonesException extends Exception {
 
     public void setLine(int line) {
         this.line = line;
+    }
+
+    public void setAdditional(String additional) {
+        this.additional = additional;
     }
 }

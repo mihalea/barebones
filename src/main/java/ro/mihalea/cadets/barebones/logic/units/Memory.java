@@ -1,6 +1,6 @@
 package ro.mihalea.cadets.barebones.logic.units;
 
-import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,13 +25,13 @@ public class Memory {
      * Gets the value if previously declared, otherwise throws an exception
      * @param key Name of the variable
      * @return Value of the variable
-     * @throws NoValueAssignedException No value has been previously assigned to the varible
+     * @throws NotAssignedException No value has been previously assigned to the varible
      */
-    public long get(String key) throws NoValueAssignedException {
+    public long get(String key) throws NotAssignedException {
         if(variables.containsKey(key))
             return variables.get(key);
         else
-            throw new NoValueAssignedException(-1);
+            throw new NotAssignedException(key);
     }
 
     /**

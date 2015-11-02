@@ -1,8 +1,8 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
-import ro.mihalea.cadets.barebones.logic.exceptions.InvalidVariableNameException;
-import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.LinkedList;
@@ -23,12 +23,12 @@ public abstract class BaseInstruction {
      * @param memory Memory handler
      * @return Next program counter
      */
-    public abstract int execute(int programCounter, Memory memory) throws NoValueAssignedException;
+    public abstract int execute(int programCounter, Memory memory) throws NotAssignedException;
 
     /**
      * Creates the instruction based on the arguments provided
      * @param args Arguments to be handled by the instruction
      * @return Final instruction
      */
-    public abstract BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidVariableNameException;
+    public abstract BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException;
 }

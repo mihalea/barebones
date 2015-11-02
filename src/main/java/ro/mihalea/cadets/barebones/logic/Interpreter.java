@@ -2,7 +2,7 @@ package ro.mihalea.cadets.barebones.logic;
 
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
-import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.BlockUnfinishedException;
 import ro.mihalea.cadets.barebones.logic.units.Decoder;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 import ro.mihalea.cadets.barebones.logic.units.Processor;
@@ -35,7 +35,7 @@ public class Interpreter {
             @Override
             public EventResponse interpret(String code) {
                 Interpreter interpreter = Interpreter.this;
-                return new ErrorResponse(0, new NotTerminatedException(100));
+                return new ErrorResponse(0, new BlockUnfinishedException(100));
             }
         };
     }

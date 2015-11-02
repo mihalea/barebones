@@ -1,7 +1,7 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
-import ro.mihalea.cadets.barebones.logic.exceptions.InvalidVariableNameException;
-import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
+import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class Decrement extends BaseInstruction {
                     memory.set(var, memory.get(var) - 1);
                 else
                     memory.set(var, -1);
-            } catch (NoValueAssignedException e) {
+            } catch (NotAssignedException e) {
                 e.printStackTrace();
             }
         }
@@ -48,10 +48,10 @@ public class Decrement extends BaseInstruction {
      * @return The same object
      */
     @Override
-    public BaseInstruction decode(LinkedList<String> args) throws InvalidVariableNameException {
+    public BaseInstruction decode(LinkedList<String> args) throws InvalidNamingException {
         for(String arg : args) {
             if (!Pattern.matches(NAME_REGEX, arg))
-                throw new InvalidVariableNameException(-1);
+                throw new InvalidNamingException(arg);
 
             variables.add(arg);
         }

@@ -1,6 +1,6 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
-import ro.mihalea.cadets.barebones.logic.exceptions.InvalidVariableNameException;
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.HashSet;
@@ -38,10 +38,10 @@ public class Clear extends BaseInstruction {
      * @return The same object
      */
     @Override
-    public BaseInstruction decode(LinkedList<String> args) throws InvalidVariableNameException {
+    public BaseInstruction decode(LinkedList<String> args) throws InvalidNamingException {
         for(String arg : args) {
             if (!Pattern.matches(NAME_REGEX, arg))
-                throw new InvalidVariableNameException(-1);
+                throw new InvalidNamingException(arg);
 
             variables.add(arg);
         }

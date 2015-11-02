@@ -1,5 +1,6 @@
 package ro.mihalea.cadets.barebones.logic.units;
 
+import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
 import ro.mihalea.cadets.barebones.logic.instructions.BaseInstruction;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class Processor {
      * Runs the complete current instruction set
      * @return The final state of the Memory
      */
-    public Memory run() {
+    public Memory run() throws NotAssignedException{
         while(programCounter < instructions.size())
             this.next();
 
@@ -56,7 +57,7 @@ public class Processor {
      * Runs the next instruction in the instruction set
      * @return Returns the final state of the variables
      */
-    public Memory next() {
+    public Memory next() throws NotAssignedException {
         programCounter = instructions.get(programCounter).execute(programCounter, memory);
         return memory;
     }

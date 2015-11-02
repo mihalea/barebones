@@ -1,8 +1,8 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
-import ro.mihalea.cadets.barebones.logic.exceptions.InvalidVariableNameException;
-import ro.mihalea.cadets.barebones.logic.exceptions.NoValueAssignedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class Copy extends BaseInstruction {
 
 
     @Override
-    public int execute(int programCounter, Memory memory) throws NoValueAssignedException {
+    public int execute(int programCounter, Memory memory) throws NotAssignedException {
         long sourceValue = memory.get(source);
         for (String d : dest)
             memory.set(d, sourceValue);
@@ -36,21 +36,21 @@ public class Copy extends BaseInstruction {
     }
 
     @Override
-    public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidVariableNameException {
+    public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException {
         dest = new ArrayList<>();
         if(args.size() < 3)
-            throw new InvalidSyntaxException(-1);
+            throw new InvalidSyntaxException();
 
         source = args.pop();
         if(!Pattern.matches(NAME_REGEX, source))
-            throw new InvalidSyntaxException(-1);
+            throw new InvalidSyntaxException();
 
         if(!args.pop().equals(">"))
-            throw new InvalidSyntaxException(-1);
+            throw new InvalidSyntaxException();
 
         for(String arg : args) {
             if (!Pattern.matches(NAME_REGEX, arg))
-                throw new InvalidVariableNameException(-1);
+                throw new InvalidNamingException(arg);
 
             dest.add(arg);
         }

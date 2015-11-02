@@ -2,7 +2,7 @@ package ro.mihalea.cadets.barebones.logic.units;
 
 import junit.framework.TestCase;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
-import ro.mihalea.cadets.barebones.logic.exceptions.NotTerminatedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.BlockUnfinishedException;
 import ro.mihalea.cadets.barebones.logic.instructions.Decrement;
 import ro.mihalea.cadets.barebones.logic.instructions.Increment;
 import ro.mihalea.cadets.barebones.logic.instructions.BaseInstruction;
@@ -67,7 +67,7 @@ public class DecoderTest extends TestCase {
             decoder.append("incr x;");
             decoder.append("decr y");
             decoder.append("decr x; incr y");
-        } catch (NotTerminatedException e) {
+        } catch (BlockUnfinishedException e) {
             System.out.println("Good");
         }
     }
