@@ -20,19 +20,50 @@ import java.util.Map;
 import java.util.List;
 
 /**
- * Created by mircea on 02/10/15.
+ * Panel containing all the swing components used to build the GUI
  */
 public class BonesPanel extends JPanel {
 
+    /**
+     * Frame which created this panel
+     */
     private final JFrame parent;
+
+    /**
+     * List of listeners listening to GUI events
+     */
     private final List<Listener> listeners;
 
+    /**
+     * Panel containing the {@link this#dataModel}
+     */
     private JScrollPane debugPane;
+
+    /**
+     * Data model which holds all the variables and their values after execution
+     */
     private DefaultTableModel dataModel;
+
+    /**
+     * Main component used to create and edit code
+     */
     private RSyntaxTextArea textArea;
+
+    /**
+     * Text area of the panel containing the interpreter output
+     */
     private JTextArea messageArea;
+
+    /**
+     * ScrollPane used to contain the messageArea
+     */
     private JScrollPane messagePane;
 
+    /**
+     * Creates a new JPanel containing a parent JFrame a list of listeners
+     * @param parent Parent JFrame containing this
+     * @param barebonesListeners List of listeners
+     */
     public BonesPanel(JFrame parent, java.util.List<Listener> barebonesListeners) {
         this.parent = parent;
         this.listeners = barebonesListeners;
@@ -40,9 +71,13 @@ public class BonesPanel extends JPanel {
         this.setupPanel();
     }
 
+    /**
+     * Creates the different panels and initiates them
+     */
     private void setupPanel() {
 
         this.setLayout(new BorderLayout());
+        //Padding on the window
         this.setBorder(new EmptyBorder(5, 15, 20, 15));
 
         setupMenuBar();
@@ -51,6 +86,9 @@ public class BonesPanel extends JPanel {
         setupMessagePanel();
     }
 
+    /**
+     * Sets up the area containing the messages from the interpreter
+     */
     private void setupMessagePanel() {
         messageArea = new JTextArea();
         messageArea.setEditable(false);
@@ -60,6 +98,9 @@ public class BonesPanel extends JPanel {
         this.add(messagePane, BorderLayout.PAGE_END);
     }
 
+    /**
+     * Sets up the area containing the buttons and places it at the top of the page
+     */
     private void setupButtonPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 10));
 
@@ -67,14 +108,20 @@ public class BonesPanel extends JPanel {
         run.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Gets the code as a continuous string
                 String code = textArea.getText();
+                //Clears the table of variable from the previous iterations
                 dataModel.setRowCount(0);
 
+                //Alerts all the listeners that the user is trying to compile
                 for (Listener li : listeners) {
                     EventResponse response = li.interpret(code);
+                    //Gets the response
                     StringBuilder output = new StringBuilder();
 
+                    //it compiled successfully
                     if(response instanceof ResultResponse) {
+                        //Adds the variable values to the model behind the GUI
                         ResultResponse result = (ResultResponse) response;
                         for (Map.Entry<String, Long> kv : result.memory.getVariables().entrySet()) {
                             dataModel.addRow(new Object[]{kv.getKey(), kv.getValue()});
@@ -82,16 +129,22 @@ public class BonesPanel extends JPanel {
 
                         messageArea.setForeground(Color.BLACK);
                         output.append("Compilation successful!\n");
+                    //It failed to compile
                     } else if(response instanceof ErrorResponse) {
+                        //Adds the error to the compiler output
                         BonesException ex = ((ErrorResponse) response).exception;
-                        output.append("Error caught " + (ex.getLine()!=-1 ? "on line " + ex.getLine() : "") +
-                                ": " + ex.getMessage());
+                        output.append("Error caught ");
+                        if(ex.getLine() != -1)
+                            output.append("on line ").append(ex.getLine());
+                        output.append(": ").append(ex.getMessage());
 
                         messageArea.setForeground(Color.RED);
 
 
 
                     }
+
+                    //Appends memory usage and cpu time to the console output
                     output.append("Memory used: ").append((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
                             / 1024 / 1024).append(" MB\n");
                     output.append("CPU time: ").append(response.timeElapsed).append(" ms");
@@ -108,10 +161,16 @@ public class BonesPanel extends JPanel {
         this.add(panel, BorderLayout.PAGE_START);
     }
 
+    /**
+     * Sets up the text editor with syntax highlighting
+     */
     private void setupEditPanel() {
         JPanel centerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        /**
+         * Creates a new RSyntaxTextArea and adds a custom token maker to it built specifically for gradle
+         */
         textArea = new RSyntaxTextArea();
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping("text/barebones", "ro.mihalea.cadets.barebones.ui.BonesSyntax");
@@ -125,6 +184,9 @@ public class BonesPanel extends JPanel {
         c.fill = GridBagConstraints.BOTH;
         centerPanel.add(scrollPane, c);
 
+        /**
+         * Creates the table that holds all the variable with their values after a successful execution
+         */
         dataModel = new DefaultTableModel();
         dataModel.addColumn("Variable");
         dataModel.addColumn("Value");
@@ -143,6 +205,9 @@ public class BonesPanel extends JPanel {
         this.add(centerPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Sets up the menu bar at the top of the window
+     */
     private void setupMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
