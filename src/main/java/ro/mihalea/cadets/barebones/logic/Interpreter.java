@@ -3,6 +3,7 @@ package ro.mihalea.cadets.barebones.logic;
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
 import ro.mihalea.cadets.barebones.events.ResultResponse;
+import ro.mihalea.cadets.barebones.logic.exceptions.BlockUnfinishedException;
 import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
 import ro.mihalea.cadets.barebones.logic.units.Decoder;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
@@ -56,9 +57,8 @@ public class Interpreter {
         if (decoder.canFetch()) {
             processor.load(decoder.fetch());
             return processor.run();
-        }
-
-        return null;
+        } else
+            throw new BlockUnfinishedException();
     }
 
 }
