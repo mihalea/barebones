@@ -1,4 +1,4 @@
-package ro.mihalea.cadets.barebones.logic;
+package ro.mihalea.cadets.barebones;
 
 import ro.mihalea.cadets.barebones.events.EventResponse;
 

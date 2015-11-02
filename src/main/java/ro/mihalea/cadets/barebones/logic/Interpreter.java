@@ -1,5 +1,6 @@
 package ro.mihalea.cadets.barebones.logic;
 
+import ro.mihalea.cadets.barebones.Listener;
 import ro.mihalea.cadets.barebones.events.DebugResponse;
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;

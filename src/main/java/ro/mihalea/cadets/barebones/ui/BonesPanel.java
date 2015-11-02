@@ -5,7 +5,7 @@ import org.fife.ui.rtextarea.Gutter;
 import ro.mihalea.cadets.barebones.events.DebugResponse;
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
-import ro.mihalea.cadets.barebones.logic.Listener;
+import ro.mihalea.cadets.barebones.Listener;
 import ro.mihalea.cadets.barebones.events.ResultResponse;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;

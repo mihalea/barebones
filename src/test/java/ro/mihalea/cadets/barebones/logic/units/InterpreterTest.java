@@ -2,9 +2,7 @@ package ro.mihalea.cadets.barebones.logic.units;
 
 import junit.framework.TestCase;
 import ro.mihalea.cadets.barebones.logic.Interpreter;
-import ro.mihalea.cadets.barebones.logic.Listener;
-import ro.mihalea.cadets.barebones.logic.exceptions.ExpectedNumberException;
-import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
+import ro.mihalea.cadets.barebones.Listener;
 
 /**
  * Created by mm8g15 on 06/10/2015.

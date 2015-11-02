@@ -1,7 +1,6 @@
 package ro.mihalea.cadets.barebones;
 
 import ro.mihalea.cadets.barebones.logic.Interpreter;
-import ro.mihalea.cadets.barebones.logic.Listener;
 import ro.mihalea.cadets.barebones.ui.BonesFrame;
 
 /**
