@@ -3,7 +3,7 @@ package ro.mihalea.cadets.barebones.logic;
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
 import ro.mihalea.cadets.barebones.events.ResultResponse;
-import ro.mihalea.cadets.barebones.logic.exceptions.*;
+import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
 import ro.mihalea.cadets.barebones.logic.units.Decoder;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 import ro.mihalea.cadets.barebones.logic.units.Processor;
@@ -47,14 +47,11 @@ public class Interpreter {
     }
 
     /**
-     * TO BE ALTERED. DO NOT LEAVE IT LIKE THIS.
      * Runs the program
      * @param code Lines of barebones to be run
-     * @return Memory at the time it finished running
+     * @return Memory at the time it finished running, null if the code is not compileable
      */
-    public Memory run(String code) throws InvalidSyntaxException, ExpectedNumberException,
-            UnexpectedBlockCloseException, InvalidCharacterException, UnknownInstructionException,
-            BlockUnfinishedException, InvalidNamingException, NotTerminatedExpection, NotAssignedException {
+    public Memory run(String code) throws BonesException {
         decoder.append(code);
         if (decoder.canFetch()) {
             processor.load(decoder.fetch());
