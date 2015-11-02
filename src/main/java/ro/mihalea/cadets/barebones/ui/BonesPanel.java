@@ -2,8 +2,10 @@ package ro.mihalea.cadets.barebones.ui;
 
 
 import org.fife.ui.rtextarea.Gutter;
+import ro.mihalea.cadets.barebones.events.DebugResponse;
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
+import ro.mihalea.cadets.barebones.logic.Interpreter;
 import ro.mihalea.cadets.barebones.logic.Listener;
 import ro.mihalea.cadets.barebones.events.ResultResponse;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
@@ -11,6 +13,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
+import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -76,6 +79,9 @@ public class BonesPanel extends JPanel {
      * Image of the line tracking symbol
      */
     private ImageIcon icon;
+    private JButton debug;
+    private JButton next;
+    private JButton stop;
 
     /**
      * Creates a new JPanel containing a parent JFrame a list of listeners
@@ -87,6 +93,69 @@ public class BonesPanel extends JPanel {
         this.listeners = barebonesListeners;
 
         this.setupPanel();
+    }
+
+    private void appendVariables(Memory memory) {
+        for (Map.Entry<String, Long> kv : memory.getVariables().entrySet()) {
+            dataModel.addRow(new Object[]{kv.getKey(), kv.getValue()});
+        }
+    }
+
+    private void setDebuggingEnabled(boolean enabled) {
+        if(!enabled)
+            gutter.removeAllTrackingIcons();
+
+        debug.setVisible(!enabled);
+        next.setVisible(enabled);
+        stop.setVisible(enabled);
+        textArea.setEditable(!enabled);
+    }
+
+    private void updateValues(Memory memory) {
+        dataModel.setRowCount(0);
+        if(memory != null)
+            for(Map.Entry<String, Long> entry : memory.getVariables().entrySet())
+                dataModel.addRow(new Object[]{entry.getKey(), entry.getValue()});
+    }
+
+    private void handleResponse(EventResponse response) {
+        StringBuilder output = new StringBuilder();
+
+        //it compiled successfully
+        if(response instanceof ResultResponse) {
+            this.updateValues(((ResultResponse) response).getMemory());
+
+            //Adds the variable values to the model behind the GUI
+            messageArea.setForeground(Color.BLACK);
+            output.append("Compilation successful!\n");
+            //Appends memory usage and cpu time to the console output
+            output.append(response.getJvmInfo());
+            //It failed to compile
+        } else if (response instanceof DebugResponse) {
+            try {
+                DebugResponse debug = (DebugResponse) response;
+                this.updateValues(debug.getMemory());
+                if(debug.getProgramCounter() != -1) {
+                    gutter.removeAllTrackingIcons();
+                    gutter.addLineTrackingIcon(debug.getProgramCounter(), icon);
+                } else {
+                    gutter.removeAllTrackingIcons();
+                    setDebuggingEnabled(false);
+                }
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
+        } else if(response instanceof ErrorResponse) {
+            BonesException ex = ((ErrorResponse) response).getException();
+            output.append("Error caught ");
+            if(ex.getLine() != -1)
+                output.append("on line ").append(ex.getLine());
+            output.append(": ").append(ex.getMessage()).append('\n');
+
+            messageArea.setForeground(Color.RED);
+        }
+
+        messageArea.setText(output.toString());
     }
 
     /**
@@ -128,59 +197,58 @@ public class BonesPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 //Gets the code as a continuous string
                 String code = textArea.getText();
-                //Clears the table of variable from the previous iterations
-                dataModel.setRowCount(0);
 
                 //Alerts all the listeners that the user is trying to compile
                 for (Listener li : listeners) {
-                    EventResponse response = li.interpret(code);
                     //Gets the response
-                    StringBuilder output = new StringBuilder();
-
-                    //it compiled successfully
-                    if(response instanceof ResultResponse) {
-                        //Adds the variable values to the model behind the GUI
-                        ResultResponse result = (ResultResponse) response;
-                        for (Map.Entry<String, Long> kv : result.memory.getVariables().entrySet()) {
-                            dataModel.addRow(new Object[]{kv.getKey(), kv.getValue()});
-                        }
-
-                        messageArea.setForeground(Color.BLACK);
-                        output.append("Compilation successful!\n");
-                    //It failed to compile
-                    } else if(response instanceof ErrorResponse) {
-                        //Adds the error to the compiler output
-                        BonesException ex = ((ErrorResponse) response).exception;
-                        output.append("Error caught ");
-                        if(ex.getLine() != -1)
-                            output.append("on line ").append(ex.getLine());
-                        output.append(": ").append(ex.getMessage()).append('\n');
-
-                        messageArea.setForeground(Color.RED);
-
-
-
-                    }
-
-                    //Appends memory usage and cpu time to the console output
-                    output.append("Memory used: ").append((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
-                            / 1024 / 1024).append(" MB\n");
-                    output.append("CPU time: ").append(response.timeElapsed).append(" ms");
-
-                    messageArea.setText(output.toString());
+                    BonesPanel.this.handleResponse(li.interpret(code));
                 }
             }
         });
         panel.add(run);
 
-        JButton debug = new JButton("Debug");
+        debug = new JButton("Debug");
         debug.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String code = textArea.getText();
+                if(code.trim().length() > 0) {
 
+
+                    dataModel.setRowCount(0);
+
+                    for (Listener li : listeners) {
+                        BonesPanel.this.handleResponse(li.loadDebug(code));
+                    }
+                    setDebuggingEnabled(true);
+                }
             }
         });
         panel.add(debug);
+
+        next = new JButton("Next");
+        next.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dataModel.setRowCount(0);
+
+                for (Listener li : listeners) {
+                    BonesPanel.this.handleResponse(li.nextDebug());
+                }
+            }
+        });
+        next.setVisible(false);
+        panel.add(next);
+
+        stop = new JButton("Stop");
+        stop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDebuggingEnabled(false);
+            }
+        });
+        stop.setVisible(false);
+        panel.add(stop);
 
         this.add(panel, BorderLayout.PAGE_START);
     }

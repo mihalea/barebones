@@ -10,7 +10,7 @@ public class ResultResponse extends EventResponse {
      * Map holding all the variables used by the interpreter
      * with all of their final values.
      */
-    public final Memory memory;
+    private final Memory memory;
 
     /**
      * Creates a response that signals that the interpreter has finished
@@ -21,5 +21,9 @@ public class ResultResponse extends EventResponse {
     public ResultResponse(long timeElapsed, Memory memory) {
         super(timeElapsed);
         this.memory = memory;
+    }
+
+    public Memory getMemory() {
+        return memory;
     }
 }

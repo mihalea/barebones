@@ -9,7 +9,7 @@ public class ErrorResponse extends EventResponse {
     /**
      * Error sent to the listeners.
      */
-    public final BonesException exception;
+    private final BonesException exception;
 
     /**
      * Creates a response that signals that the interpreter
@@ -20,5 +20,9 @@ public class ErrorResponse extends EventResponse {
     public ErrorResponse(long timeElapsed, BonesException exception) {
         super(timeElapsed);
         this.exception = exception;
+    }
+
+    public BonesException getException() {
+        return exception;
     }
 }

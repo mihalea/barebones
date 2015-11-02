@@ -14,5 +14,9 @@ public abstract class Listener {
      * @return A response stating if the interpreter succeeded
      * and it may eventually contain an error
      */
-    public abstract EventResponse interpret(String code);
+    public EventResponse interpret(String code) { return null; }
+
+    public EventResponse loadDebug(String code) { return null; }
+
+    public EventResponse nextDebug() { return null; }
 }

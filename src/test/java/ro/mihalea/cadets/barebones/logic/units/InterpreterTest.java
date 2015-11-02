@@ -85,8 +85,6 @@ public class InterpreterTest extends TestCase {
                 "decr x;" +
                 "end;");
         assertEquals(250, memory.get("z"));
-
-        memory = interpreter.run("while x not 0 do;");
     }
 
     public void testCopy() throws Exception {

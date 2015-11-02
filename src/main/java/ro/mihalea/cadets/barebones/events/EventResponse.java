@@ -7,7 +7,7 @@ public abstract class EventResponse {
     /**
      * Total time spent interpreting at the moment the response was sent.
      */
-    public final long timeElapsed;
+    private final long timeElapsed;
 
     /**
      * Template which other classes should extend containing
@@ -16,5 +16,18 @@ public abstract class EventResponse {
      */
     public EventResponse(long timeElapsed) {
         this.timeElapsed = timeElapsed;
+    }
+
+    public String getJvmInfo() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Memory used: ").append((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
+                / 1024 / 1024).append(" MB\n");
+        builder.append("CPU time: ").append(this.timeElapsed).append(" ms");
+
+        return builder.toString();
+    }
+
+    public long getTimeElapsed() {
+        return timeElapsed;
     }
 }

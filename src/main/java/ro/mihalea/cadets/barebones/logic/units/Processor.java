@@ -47,7 +47,7 @@ public class Processor {
      * @return The final state of the Memory
      */
     public Memory run() throws NotAssignedException{
-        while(programCounter < instructions.size())
+        while(programCounter != -1)
             this.next();
 
         return memory;
@@ -58,7 +58,12 @@ public class Processor {
      * @return Returns the final state of the variables
      */
     public Memory next() throws NotAssignedException {
-        programCounter = instructions.get(programCounter).execute(programCounter, memory);
+        if(programCounter < instructions.size())
+            programCounter = instructions.get(programCounter).execute(programCounter, memory);
+
+        if(programCounter >= instructions.size())
+            programCounter = -1;
+
         return memory;
     }
 
