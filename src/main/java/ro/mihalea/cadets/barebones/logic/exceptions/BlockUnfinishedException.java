@@ -14,6 +14,6 @@ public class BlockUnfinishedException extends BonesException {
     }
 
     public BlockUnfinishedException(String additional, int line) {
-        super("Variable does not meet the naming restrictions", additional, line);
+        super("One or more block instructions do not have an end", additional, line);
     }
 }

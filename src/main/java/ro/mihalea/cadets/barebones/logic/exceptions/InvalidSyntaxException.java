@@ -14,6 +14,6 @@ public class InvalidSyntaxException extends BonesException {
     }
 
     public InvalidSyntaxException(String additional, int line) {
-        super("Variable does not meet the naming restrictions", additional, line);
+        super("Instruction does not follow the imposed syntax", additional, line);
     }
 }

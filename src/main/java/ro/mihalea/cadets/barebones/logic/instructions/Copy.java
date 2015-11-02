@@ -41,19 +41,19 @@ public class Copy extends BaseInstruction {
             throw new InvalidSyntaxException();
 
         source = args.pop();
-        if(!Pattern.matches(NAME_REGEX, source))
-            throw new InvalidSyntaxException();
+        if(!Pattern.matches(REGEX_NAME, source))
+            throw new InvalidNamingException(source);
 
         if(!args.pop().equals(">"))
             throw new InvalidSyntaxException();
 
         for(String arg : args) {
-            if (!Pattern.matches(NAME_REGEX, arg))
+            if (!Pattern.matches(REGEX_NAME, arg))
                 throw new InvalidNamingException(arg);
 
             dest.add(arg);
         }
 
-        return null;
+        return this;
     }
 }

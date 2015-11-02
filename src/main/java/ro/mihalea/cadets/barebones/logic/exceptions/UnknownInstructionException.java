@@ -14,6 +14,6 @@ public class UnknownInstructionException extends BonesException {
     }
 
     public UnknownInstructionException(String additional, int line) {
-        super("Variable does not meet the naming restrictions", additional, line);
+        super("Unknown instruction", additional, line);
     }
 }

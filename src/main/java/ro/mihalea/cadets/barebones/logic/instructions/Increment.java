@@ -50,7 +50,7 @@ public class Increment extends BaseInstruction {
     @Override
     public BaseInstruction decode(LinkedList<String> args) throws InvalidNamingException {
         for(String arg : args) {
-            if (!Pattern.matches(NAME_REGEX, arg))
+            if (!Pattern.matches(REGEX_NAME, arg))
                 throw new InvalidNamingException(arg);
 
             variables.add(arg);

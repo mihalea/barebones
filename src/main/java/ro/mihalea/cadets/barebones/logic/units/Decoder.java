@@ -14,7 +14,7 @@ public class Decoder {
     /**
      * Regex used for testing against invalid characters
      */
-    private final String INVALID_REGEX = "[^a-zA-Z0-9\\s]";
+    private final String INVALID_REGEX = "[^a-zA-Z0-9=_\\s]";
 
     /**
      * Decoded instruction buffer waiting to be sent to {@link Processor}
@@ -33,7 +33,7 @@ public class Decoder {
      * @param code One or more instructions
      */
     public void append(String code) throws BlockUnfinishedException, InvalidCharacterException,
-            UnknownInstructionException, InvalidSyntaxException, InvalidNamingException {
+            UnknownInstructionException, InvalidSyntaxException, InvalidNamingException, NotTerminatedExpection {
         String[] statements = code.split(";");
         int lineCount = 0;
 
@@ -43,7 +43,7 @@ public class Decoder {
          * one statement has not been correctly terminated
          */
         if(code.trim().charAt(code.length() - 1) != ';')
-            throw new BlockUnfinishedException(statements.length);
+            throw new NotTerminatedExpection(statements.length);
         else
             for (String statement : statements) {
                 lineCount++;
@@ -80,7 +80,7 @@ public class Decoder {
          * Adds all the tokes to a LinkedList (which implements Queue)
          */
         LinkedList<String> arguments = new LinkedList<>();
-        arguments.addAll(Arrays.asList(rawInstruction.split("\\W")));
+        arguments.addAll(Arrays.asList(rawInstruction.split(" ")));
 
 
         /**
@@ -97,7 +97,7 @@ public class Decoder {
             case "copy":
                 return new Copy().decode(arguments);
             case "init":
-                break;
+                return new Init().decode(arguments);
             case "while":
                 break;
             case "end":

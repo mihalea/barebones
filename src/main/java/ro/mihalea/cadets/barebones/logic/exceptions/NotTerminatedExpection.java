@@ -14,6 +14,6 @@ public class NotTerminatedExpection extends BonesException {
     }
 
     public NotTerminatedExpection(String additional, int line) {
-        super("Variable does not meet the naming restrictions", additional, line);
+        super("One or more instructions are not terminated using the semicolon", additional, line);
     }
 }

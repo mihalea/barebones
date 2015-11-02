@@ -14,6 +14,6 @@ public class NotAssignedException extends BonesException {
     }
 
     public NotAssignedException(String additional, int line) {
-        super("Variable does not meet the naming restrictions", additional, line);
+        super("Variable used before it had a value assigned", additional, line);
     }
 }

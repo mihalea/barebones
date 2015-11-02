@@ -60,4 +60,13 @@ public class InterpreterTest extends TestCase {
         memory = interpreter.run("decr x; clear x; incr x;");
         assertEquals(1, memory.get("x"));
     }
+
+    public void testInit() throws NotAssignedException {
+        Interpreter interpreter = new Interpreter();
+        Memory memory = interpreter.run("init x = 25;");
+        assertEquals(25, memory.get("x"));
+
+        memory = interpreter.run("incr x; init x = 4761;");
+        assertEquals(4761, memory.get("x"));
+    }
 }

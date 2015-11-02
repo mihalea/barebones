@@ -15,7 +15,7 @@ public abstract class BaseInstruction {
     /**
      * Regex used for determining whether a variable name is valid or not
      */
-    protected String NAME_REGEX = "[a-zA-Z_][a-zA-Z0-9_]*";
+    protected String REGEX_NAME = "[a-zA-Z_][a-zA-Z0-9_]*";
 
     /**
      * Executes the instruction and returns the next program counter
