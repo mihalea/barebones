@@ -85,7 +85,7 @@ public class Decoder {
     private BaseInstruction decode(String rawInstruction, final int lineIndex)
             throws InvalidNamingException, InvalidSyntaxException, ExpectedNumberException, UnknownInstructionException, UnexpectedBlockCloseException {
 
-        rawInstruction.trim();
+        rawInstruction = rawInstruction.trim();
         if(!rawInstruction.isEmpty()) {
             /**
              * Adds all the tokes to a LinkedList (which implements Queue)
@@ -124,18 +124,33 @@ public class Decoder {
         }
     }
 
+    /**
+     * Removes the comments from an instruction so that it can be decoded
+     * @param instr Raw instruction with comments
+     * @return Sanitized instruction containing no comments
+     * @throws UnexpectedBlockCloseException Unexpected multiline comment closure
+     */
     private String removeComments(String instr) throws UnexpectedBlockCloseException {
         StringBuilder builder = new StringBuilder(instr);
+
+        //Start of the multiline comment on the current line
         int start = -1;
+
         for (int i=0 ; i<builder.length() ; i++) {
-            if(builder.charAt(i) == ':' && builder.charAt(i+1) == '#') {
+            /**
+             * Multiline comment closure.
+             * Short circuiting prevents the last comparison going out of bounds
+             */
+            if(builder.charAt(i) == ':' && i < builder.length() - 1 && builder.charAt(i+1) == '#') {
                 if(isMultiLineComment) {
                     isMultiLineComment = false;
+
                     if(start == -1) {
+                        //Comment started on a previous line
                         builder = builder.delete(0, i + 2);
                         i = 0;
-                    }
-                    else {
+                    } else {
+                        //Comment started on this line
                         builder = builder.delete(start, i + 2);
                         i = start;
                         start = -1;
@@ -146,7 +161,10 @@ public class Decoder {
 
                 i++; //Also skip the next character
             } else if(builder.charAt(i) == '#') {
-                if(builder.charAt(i+1) == ':') {
+                /**
+                 * Short circuiting prevents the last comparison going out of bounds
+                 */
+                if(i < builder.length() - 1 && builder.charAt(i+1) == ':') {
                     isMultiLineComment = true;
                     //Also skip the next character
                     start = i++;
@@ -156,6 +174,7 @@ public class Decoder {
             }
         }
 
+        // A multiline comment has been started on this line but it closes on further line
         if(isMultiLineComment) {
             if(start != -1)
                 builder = builder.delete(start, builder.length());
@@ -175,6 +194,11 @@ public class Decoder {
         return blocks.empty();
     }
 
+    /**
+     * Return the decoded instruction list and clears the buffer
+     * @return Decoded instruction list
+     * @throws BlockUnfinishedException One or more blocks have no end
+     */
     public List<BaseInstruction> fetch() throws BlockUnfinishedException {
         if(!canFetch())
             throw new BlockUnfinishedException();
