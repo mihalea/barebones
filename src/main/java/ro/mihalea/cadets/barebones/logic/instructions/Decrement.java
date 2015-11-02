@@ -20,6 +20,10 @@ public class Decrement extends BaseInstruction {
      */
     private List<String> variables = new ArrayList<>();
 
+    public Decrement(int lineIndex) {
+        super(lineIndex);
+    }
+
     /**
      * Decreases the variable by one if set, otherwise sets it to -1
      * and return the next consecutive program counter

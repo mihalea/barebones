@@ -24,6 +24,15 @@ public abstract class BaseInstruction {
     protected String REGEX_NUM = "[0-9]+";
 
     /**
+     * Line index as described in the code
+     */
+    protected int lineIndex;
+
+    public BaseInstruction(int lineIndex) {
+        this.lineIndex = lineIndex;
+    }
+
+    /**
      * Executes the instruction and returns the next program counter
      * @param programCounter Current program counter
      * @param memory Memory handler
@@ -42,4 +51,8 @@ public abstract class BaseInstruction {
      * @throws ExpectedNumberException Expected a number instead of a variable name
      */
     public abstract BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException, ExpectedNumberException;
+
+    public int getLineIndex() {
+        return lineIndex;
+    }
 }

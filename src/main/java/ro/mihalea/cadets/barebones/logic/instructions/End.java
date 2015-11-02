@@ -13,6 +13,10 @@ import java.util.LinkedList;
  * syntax: end
  */
 public class End extends BlockInstruction {
+    public End(int lineIndex) {
+        super(lineIndex);
+    }
+
     @Override
     public int execute(int programCounter, Memory memory) throws NotAssignedException {
         return pairIndex;

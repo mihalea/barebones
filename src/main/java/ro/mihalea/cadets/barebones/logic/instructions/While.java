@@ -23,6 +23,10 @@ public class While extends BlockInstruction {
      */
     private String rightTerm;
 
+    public While(int lineIndex) {
+        super(lineIndex);
+    }
+
     /**
      * Retrieves the value of both terms and then depending on the comparison it decides whether
      * to do one more iteration

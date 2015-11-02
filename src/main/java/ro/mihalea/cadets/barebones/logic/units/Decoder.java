@@ -61,7 +61,7 @@ public class Decoder {
                     String sanitized = String.join(" ", statement.trim().split("\\s"));
 
                     try {
-                        BaseInstruction instruction = this.decode(sanitized, lineCount);
+                        BaseInstruction instruction = this.decode(sanitized, lineCount - 1);
                         if(instruction != null) {
                             instructions.add(instruction);
                             if (line.charAt(line.length() - 1) != ';')
@@ -99,23 +99,23 @@ public class Decoder {
             String instruction = arguments.pop();
             switch (instruction) {
                 case "incr":
-                    return new Increment().decode(arguments);
+                    return new Increment(lineIndex).decode(arguments);
                 case "decr":
-                    return new Decrement().decode(arguments);
+                    return new Decrement(lineIndex).decode(arguments);
                 case "clear":
-                    return new Clear().decode(arguments);
+                    return new Clear(lineIndex).decode(arguments);
                 case "copy":
-                    return new Copy().decode(arguments);
+                    return new Copy(lineIndex).decode(arguments);
                 case "init":
-                    return new Init().decode(arguments);
+                    return new Init(lineIndex).decode(arguments);
                 case "while":
                     blocks.push(instructions.size());
-                    return new While().decode(arguments);
+                    return new While(lineIndex).decode(arguments);
                 case "end":
                     Integer matchingIndex = blocks.pop();
                     ((BlockInstruction) instructions.get(matchingIndex)).setPairIndex(instructions.size());
                     arguments.push(matchingIndex.toString());
-                    return new End().decode(arguments);
+                    return new End(lineIndex).decode(arguments);
                 default:
                     throw new UnknownInstructionException(instruction, lineIndex);
             }

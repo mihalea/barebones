@@ -7,7 +7,7 @@ import ro.mihalea.cadets.barebones.logic.units.Memory;
  */
 public class DebugResponse extends EventResponse {
     private final Memory memory;
-    private final int programCounter;
+    private final int lineIndex;
 
     /**
      * Template which other classes should extend containing
@@ -15,17 +15,17 @@ public class DebugResponse extends EventResponse {
      *
      * @param timeElapsed Total time spent interpreting at the moment the response was sent.
      */
-    public DebugResponse(long timeElapsed, Memory memory, int programCounter) {
+    public DebugResponse(long timeElapsed, Memory memory, int lineIndex) {
         super(timeElapsed);
         this.memory = memory;
-        this.programCounter = programCounter;
+        this.lineIndex = lineIndex;
     }
 
     public Memory getMemory() {
         return memory;
     }
 
-    public int getProgramCounter() {
-        return programCounter;
+    public int getLineIndex() {
+        return lineIndex;
     }
 }

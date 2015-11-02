@@ -12,6 +12,10 @@ public abstract class BlockInstruction extends BaseInstruction {
      */
     protected int pairIndex = -1;
 
+    public BlockInstruction(int lineIndex) {
+        super(lineIndex);
+    }
+
     /**
      * Sets the line index of the pair
      * @param pairIndex Line index of the pair

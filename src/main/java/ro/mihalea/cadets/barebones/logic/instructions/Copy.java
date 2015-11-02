@@ -26,6 +26,10 @@ public class Copy extends BaseInstruction {
      */
     List<String> dest = new ArrayList<>();
 
+    public Copy(int lineIndex) {
+        super(lineIndex);
+    }
+
 
     /**
      * Sets the value of all the variables in dest to the value of source

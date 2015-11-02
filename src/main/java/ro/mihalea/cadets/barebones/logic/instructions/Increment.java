@@ -20,6 +20,10 @@ public class Increment extends BaseInstruction {
      */
     private List<String> variables = new ArrayList<>();
 
+    public Increment(int lineIndex) {
+        super(lineIndex);
+    }
+
     /**
      * Increases the variable by one if set, otherwise sets it to 1
      * and return the next consecutive program counter

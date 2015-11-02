@@ -67,7 +67,14 @@ public class Processor {
         return memory;
     }
 
-    public int getProgramCounter() {
-        return programCounter;
+    /**
+     * Returns the line index of the instruction waiting to be executed
+     * @return Line index of the next instruction
+     */
+    public int getLineIndex() {
+        if(programCounter != -1)
+            return instructions.get(programCounter).getLineIndex();
+        else
+            return -1;
     }
 }

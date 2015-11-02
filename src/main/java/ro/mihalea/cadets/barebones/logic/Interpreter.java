@@ -52,7 +52,7 @@ public class Interpreter {
                 try {
                     Interpreter inter = Interpreter.this;
                     inter.load(code);
-                    return new DebugResponse(0, null, processor.getProgramCounter());
+                    return new DebugResponse(0, null, processor.getLineIndex());
 
                 } catch (BonesException e) {
                     return new ErrorResponse(0, e);
@@ -63,7 +63,7 @@ public class Interpreter {
             public EventResponse nextDebug() {
                 try {
                     Memory memory = Interpreter.this.next();
-                    return new DebugResponse(0, memory, processor.getProgramCounter());
+                    return new DebugResponse(0, memory, processor.getLineIndex());
 
                 } catch (NotAssignedException e) {
                     return new ErrorResponse(0, e);
@@ -91,7 +91,15 @@ public class Interpreter {
     }
 
     public Memory next() throws NotAssignedException {
-        return processor.next();
+        int startIndex = processor.getLineIndex();
+        int index;
+        Memory memory;
+        do {
+            memory = processor.next();
+            index = processor.getLineIndex();
+        } while(startIndex == index && index != -1);
+
+        return memory;
     }
 
 }

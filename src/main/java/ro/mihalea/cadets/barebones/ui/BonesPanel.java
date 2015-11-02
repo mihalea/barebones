@@ -5,7 +5,6 @@ import org.fife.ui.rtextarea.Gutter;
 import ro.mihalea.cadets.barebones.events.DebugResponse;
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
-import ro.mihalea.cadets.barebones.logic.Interpreter;
 import ro.mihalea.cadets.barebones.logic.Listener;
 import ro.mihalea.cadets.barebones.events.ResultResponse;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
@@ -135,9 +134,9 @@ public class BonesPanel extends JPanel {
             try {
                 DebugResponse debug = (DebugResponse) response;
                 this.updateValues(debug.getMemory());
-                if(debug.getProgramCounter() != -1) {
+                if(debug.getLineIndex() != -1) {
                     gutter.removeAllTrackingIcons();
-                    gutter.addLineTrackingIcon(debug.getProgramCounter(), icon);
+                    gutter.addLineTrackingIcon(debug.getLineIndex(), icon);
                 } else {
                     gutter.removeAllTrackingIcons();
                     setDebuggingEnabled(false);

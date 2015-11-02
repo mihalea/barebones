@@ -18,6 +18,10 @@ public class Clear extends BaseInstruction {
      */
     private HashSet<String> variables = new HashSet<>();
 
+    public Clear(int lineIndex) {
+        super(lineIndex);
+    }
+
     /**
      * Set the variables to zero and return the next consecutive program counter
      * @param programCounter Current program counter

@@ -24,6 +24,10 @@ public class Init extends BaseInstruction {
      */
     private long value;
 
+    public Init(int lineIndex) {
+        super(lineIndex);
+    }
+
     /**
      * Sets the variable to the provided value
      * @param programCounter Current program counter
