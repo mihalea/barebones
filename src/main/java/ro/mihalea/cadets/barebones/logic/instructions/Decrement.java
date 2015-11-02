@@ -1,14 +1,13 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
-import ro.mihalea.cadets.barebones.logic.exceptions.ExpectedNumberException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
+import ro.mihalea.cadets.barebones.logic.units.Evaluator;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Instruction that decrements a list of variables
@@ -56,7 +55,7 @@ public class Decrement extends BaseInstruction {
     @Override
     public BaseInstruction decode(LinkedList<String> args) throws InvalidNamingException {
         for(String arg : args) {
-            if(!Pattern.matches(REGEX_NAME, arg))
+            if(!Evaluator.isVariable(arg))
                 throw new InvalidNamingException(arg);
             variables.add(arg);
         }

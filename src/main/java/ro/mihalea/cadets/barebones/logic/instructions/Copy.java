@@ -1,30 +1,27 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
-import ro.mihalea.cadets.barebones.logic.exceptions.ExpectedNumberException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
+import ro.mihalea.cadets.barebones.logic.units.Evaluator;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Instruction that copies the value of one variable to a list of value
- * Syntax: copy [source] to [dest...]
+ * Syntax: copy [expr] to [dest...]
  */
 public class Copy extends BaseInstruction {
     /**
-     * Variable from which we copy
+     * Expression which will be evaluated at runtime
      */
-    String source;
+    LinkedList<String> expression = new LinkedList<>();
 
     /**
-     * Variables to which we copy
+     * Variable which will receive the result of the expression
      */
-    List<String> dest = new ArrayList<>();
+    String dest;
 
     public Copy(int lineIndex) {
         super(lineIndex);
@@ -40,9 +37,6 @@ public class Copy extends BaseInstruction {
      */
     @Override
     public int execute(int programCounter, Memory memory) throws NotAssignedException {
-        long sourceValue = memory.get(source);
-        for (String d : dest)
-            memory.set(d, sourceValue);
         return programCounter + 1;
     }
 
@@ -58,18 +52,14 @@ public class Copy extends BaseInstruction {
         if(args.size() < 3)
             throw new InvalidSyntaxException();
 
-        source = args.pop();
-        if(!Pattern.matches(REGEX_NAME, source))
-            throw new InvalidNamingException(source);
-
-        if(!args.pop().equals("to"))
-            throw new InvalidSyntaxException();
-
-        for(String arg : args) {
-            if(!Pattern.matches(REGEX_NAME, arg))
-                throw new InvalidNamingException(arg);
-            dest.add(arg);
+        String token;
+        while(!(token = args.pop()).equals("to")) {
+            if(!(Evaluator.isVariable(token) || Evaluator.isNumber(token) || Evaluator.isOperator(token)))
+                throw new InvalidSyntaxException();
+            expression.push(token);
         }
+
+        dest = args.pop();
 
         return this;
     }

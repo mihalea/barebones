@@ -1,9 +1,9 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
-import ro.mihalea.cadets.barebones.logic.exceptions.ExpectedNumberException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
+import ro.mihalea.cadets.barebones.logic.units.Evaluator;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.LinkedList;
@@ -46,9 +46,9 @@ public class While extends BlockInstruction {
          * tested when decoded
          */
         long rValue = Long.MAX_VALUE;
-        if(Pattern.matches(REGEX_NAME, rightTerm))
+        if(Evaluator.isVariable(rightTerm))
             rValue = memory.get(rightTerm);
-        else if(Pattern.matches(REGEX_NUM, rightTerm))
+        else if(Evaluator.isNumber(rightTerm))
             rValue = Long.parseLong(rightTerm);
 
         return lValue == rValue ? pairIndex + 1 : programCounter + 1;
@@ -65,7 +65,7 @@ public class While extends BlockInstruction {
     @Override
     public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException {
         leftTerm = args.pop();
-        if(!Pattern.matches(REGEX_NAME, leftTerm))
+        if(!Evaluator.isVariable(leftTerm))
             throw new InvalidNamingException(leftTerm);
 
         if(!args.pop().equals("not"))
@@ -73,7 +73,7 @@ public class While extends BlockInstruction {
 
         rightTerm = args.pop();
 
-        if(!Pattern.matches(REGEX_NAME, rightTerm) && !Pattern.matches(REGEX_NUM, rightTerm))
+        if(!(Evaluator.isVariable(rightTerm) || Evaluator.isNumber(rightTerm)))
             throw new InvalidSyntaxException("Right term is not a variable nor a number");
 
         if(!args.pop().equals("do"))

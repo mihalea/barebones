@@ -3,11 +3,10 @@ package ro.mihalea.cadets.barebones.logic.instructions;
 import ro.mihalea.cadets.barebones.logic.exceptions.ExpectedNumberException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
-import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
+import ro.mihalea.cadets.barebones.logic.units.Evaluator;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.LinkedList;
-import java.util.regex.Pattern;
 
 /**
  * Instruction that sets a single variable to a value
@@ -47,14 +46,14 @@ public class Init extends BaseInstruction {
             throw new InvalidSyntaxException();
 
         variable = args.pop();
-        if(!Pattern.matches(REGEX_NAME, variable))
+        if(!Evaluator.isVariable(variable))
             throw new InvalidNamingException(variable);
 
         if(!args.pop().equals("="))
             throw new InvalidSyntaxException();
 
         String rawValue = args.pop();
-        if(!Pattern.matches(REGEX_NUM, rawValue))
+        if(!Evaluator.isNumber(rawValue))
             throw new ExpectedNumberException(rawValue);
 
         value = Long.parseLong(rawValue);

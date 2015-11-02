@@ -13,15 +13,7 @@ import java.util.regex.Pattern;
  * Base model for all the decoded instructions
  */
 public abstract class BaseInstruction {
-    /**
-     * Regex used for determining whether a variable name is valid or not
-     */
-    protected String REGEX_NAME = "[a-zA-Z_][a-zA-Z0-9_]*";
 
-    /**
-     * Regex used in determining whether an argument is a valid number
-     */
-    protected String REGEX_NUM = "[0-9]+";
 
     /**
      * Line index as described in the code
