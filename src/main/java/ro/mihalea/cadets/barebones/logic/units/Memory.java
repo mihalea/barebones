@@ -69,4 +69,8 @@ public class Memory {
     public void clear() {
         variables.clear();
     }
+
+    public HashMap<String, Long> getVariables() {
+        return variables;
+    }
 }

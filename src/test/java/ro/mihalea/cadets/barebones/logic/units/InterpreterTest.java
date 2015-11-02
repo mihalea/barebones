@@ -3,6 +3,7 @@ package ro.mihalea.cadets.barebones.logic.units;
 import junit.framework.TestCase;
 import ro.mihalea.cadets.barebones.logic.Interpreter;
 import ro.mihalea.cadets.barebones.logic.Listener;
+import ro.mihalea.cadets.barebones.logic.exceptions.ExpectedNumberException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
 
 /**
@@ -18,7 +19,7 @@ public class InterpreterTest extends TestCase {
         assertNotNull(listener);
     }
 
-    public void testIncrement() throws NotAssignedException {
+    public void testIncrement() throws Exception {
         Interpreter interpreter = new Interpreter();
         Memory memory = interpreter.run("incr x;");
         assertEquals(1, memory.get("x"));
@@ -35,7 +36,7 @@ public class InterpreterTest extends TestCase {
         assertEquals(1, memory.get("y"));
     }
 
-    public void testDecrement() throws NotAssignedException{
+    public void testDecrement() throws Exception{
         Interpreter interpreter = new Interpreter();
         Memory memory = interpreter.run("decr x;");
         assertEquals(-1, memory.get("x"));
@@ -52,7 +53,7 @@ public class InterpreterTest extends TestCase {
         assertEquals(-1, memory.get("y"));
     }
 
-    public void testClear() throws NotAssignedException {
+    public void testClear() throws Exception {
         Interpreter interpreter = new Interpreter();
         Memory memory = interpreter.run("decr x; clear x;");
         assertEquals(0, memory.get("x"));
@@ -61,7 +62,7 @@ public class InterpreterTest extends TestCase {
         assertEquals(1, memory.get("x"));
     }
 
-    public void testInit() throws NotAssignedException {
+    public void testInit() throws Exception {
         Interpreter interpreter = new Interpreter();
         Memory memory = interpreter.run("init x = 25;");
         assertEquals(25, memory.get("x"));
@@ -70,7 +71,7 @@ public class InterpreterTest extends TestCase {
         assertEquals(4761, memory.get("x"));
     }
 
-    public void testWhile() throws NotAssignedException {
+    public void testWhile() throws Exception {
         Interpreter interpreter = new Interpreter();
         Memory memory = interpreter.run("init x = 25; clear y; while x not 0 do; incr y; decr x; end;");
         assertEquals(25, memory.get("y"));
@@ -86,13 +87,13 @@ public class InterpreterTest extends TestCase {
         assertEquals(250, memory.get("z"));
     }
 
-    public void testCopy() throws NotAssignedException {
+    public void testCopy() throws Exception {
         Interpreter interpreter = new Interpreter();
         Memory memory = interpreter.run("init x = 25; copy x to y; incr y;");
         assertEquals(26, memory.get("y"));
     }
 
-    public void testMultiply() throws NotAssignedException {
+    public void testMultiply() throws Exception {
         Interpreter interpreter = new Interpreter();
 
         Memory memory = interpreter.run("init X = 24;" +
@@ -114,7 +115,7 @@ public class InterpreterTest extends TestCase {
         assertEquals(1296, memory.get("Z"));
     }
 
-    public void testFactorial() throws NotAssignedException {
+    public void testFactorial() throws Exception {
         Interpreter interpreter = new Interpreter();
 
         Memory memory = interpreter.run("init N = 5;" +
@@ -137,7 +138,7 @@ public class InterpreterTest extends TestCase {
         assertEquals(120, memory.get("F"));
     }
 
-    public void testFibonacci() throws NotAssignedException {
+    public void testFibonacci() throws Exception {
         Interpreter interpreter = new Interpreter();
 
         Memory memory = interpreter.run("init N = 10;" +
@@ -160,7 +161,7 @@ public class InterpreterTest extends TestCase {
         assertEquals(55, memory.get("F"));
     }
 
-    public void testComment() throws NotAssignedException {
+    public void testComment() throws Exception {
         Interpreter interpreter = new Interpreter();
         Memory memory = interpreter.run("incr x;\n" +
                 "#incr x");

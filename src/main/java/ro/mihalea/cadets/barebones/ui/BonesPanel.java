@@ -9,6 +9,7 @@ import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -75,17 +76,17 @@ public class BonesPanel extends JPanel {
 
                     if(response instanceof ResultResponse) {
                         ResultResponse result = (ResultResponse) response;
-                        for (Map.Entry<String, Long> kv : result.vars.entrySet()) {
+                        for (Map.Entry<String, Long> kv : result.memory.getVariables().entrySet()) {
                             dataModel.addRow(new Object[]{kv.getKey(), kv.getValue()});
                         }
 
                         messageArea.setForeground(Color.BLACK);
                         output.append("Compilation successful!\n");
                     } else if(response instanceof ErrorResponse) {
-                        /*ErrorCaught err = ((ErrorResponse) response).error;
-                        output.append("Error caught " + (err.line!=-1 ? "on line " + err.line : "") +
-                                ": " + err.error.getMessage() + " [code " + err.error.getCode() + "]\n");
-*/
+                        BonesException ex = ((ErrorResponse) response).exception;
+                        output.append("Error caught " + (ex.getLine()!=-1 ? "on line " + ex.getLine() : "") +
+                                ": " + ex.getMessage());
+
                         messageArea.setForeground(Color.RED);
 
 

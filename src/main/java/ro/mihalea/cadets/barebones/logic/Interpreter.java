@@ -2,7 +2,8 @@ package ro.mihalea.cadets.barebones.logic;
 
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
-import ro.mihalea.cadets.barebones.logic.exceptions.BlockUnfinishedException;
+import ro.mihalea.cadets.barebones.events.ResultResponse;
+import ro.mihalea.cadets.barebones.logic.exceptions.*;
 import ro.mihalea.cadets.barebones.logic.units.Decoder;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 import ro.mihalea.cadets.barebones.logic.units.Processor;
@@ -34,8 +35,13 @@ public class Interpreter {
         return new Listener() {
             @Override
             public EventResponse interpret(String code) {
-                Interpreter interpreter = Interpreter.this;
-                return new ErrorResponse(0, new BlockUnfinishedException(100));
+                try {
+                    Memory memory = Interpreter.this.run(code);
+                    return new ResultResponse(0, memory);
+                } catch (BonesException exception) {
+                    return new ErrorResponse(0, exception);
+                }
+
             }
         };
     }
@@ -46,15 +52,13 @@ public class Interpreter {
      * @param code Lines of barebones to be run
      * @return Memory at the time it finished running
      */
-    public Memory run(String code) {
-        try {
-            decoder.append(code);
-            if (decoder.canFetch()) {
-                processor.load(decoder.fetch());
-                return processor.run();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public Memory run(String code) throws InvalidSyntaxException, ExpectedNumberException,
+            UnexpectedBlockCloseException, InvalidCharacterException, UnknownInstructionException,
+            BlockUnfinishedException, InvalidNamingException, NotTerminatedExpection, NotAssignedException {
+        decoder.append(code);
+        if (decoder.canFetch()) {
+            processor.load(decoder.fetch());
+            return processor.run();
         }
 
         return null;

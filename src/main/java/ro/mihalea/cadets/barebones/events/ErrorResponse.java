@@ -12,11 +12,6 @@ public class ErrorResponse extends EventResponse {
     public final BonesException exception;
 
     /**
-     * Line on which the error got caught
-     */
-    public int line;
-
-    /**
      * Creates a response that signals that the interpreter
      * has not finished running successfully.
      * @param timeElapsed Total time spent interpreting at the moment the error was thrown.

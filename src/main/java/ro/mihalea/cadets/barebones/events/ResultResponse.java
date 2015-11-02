@@ -1,5 +1,7 @@
 package ro.mihalea.cadets.barebones.events;
 
+import ro.mihalea.cadets.barebones.logic.units.Memory;
+
 import java.util.HashMap;
 
 /**
@@ -10,16 +12,16 @@ public class ResultResponse extends EventResponse {
      * Map holding all the variables used by the interpreter
      * with all of their final values.
      */
-    public final HashMap<String, Long> vars;
+    public final Memory memory;
 
     /**
      * Creates a response that signals that the interpreter has finished
      * running successfully and has returned a list of variables.
      * @param timeElapsed Total time spent interpreting at the moment the event was sent.
-     * @param vars Map of the variables as they looked when the interpreter finished running.
+     * @param memory Map of the variables as they looked when the interpreter finished running.
      */
-    public ResultResponse(long timeElapsed, HashMap<String, Long> vars) {
+    public ResultResponse(long timeElapsed, Memory memory) {
         super(timeElapsed);
-        this.vars = vars;
+        this.memory = memory;
     }
 }
