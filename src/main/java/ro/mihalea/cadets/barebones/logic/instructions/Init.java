@@ -50,7 +50,7 @@ public class Init extends BaseInstruction {
             throw new InvalidSyntaxException();
 
         String rawValue = args.pop();
-        if(!Pattern.matches(REGEX_NUM, variable))
+        if(!Pattern.matches(REGEX_NUM, rawValue))
             throw new ExpectedNumberException(rawValue);
 
         value = Long.parseLong(rawValue);

@@ -61,4 +61,8 @@ public class Processor {
         programCounter = instructions.get(programCounter).execute(programCounter, memory);
         return memory;
     }
+
+    public int getProgramCounter() {
+        return programCounter;
+    }
 }

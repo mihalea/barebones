@@ -21,7 +21,7 @@ public abstract class BaseInstruction {
     /**
      * Regex used in determining whether an argument is a valid number
      */
-    protected String REGEX_NUM = "\\d+";
+    protected String REGEX_NUM = "[0-9]+";
 
     /**
      * Executes the instruction and returns the next program counter

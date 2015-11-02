@@ -1,6 +1,7 @@
 package ro.mihalea.cadets.barebones.ui;
 
 
+import org.fife.ui.rtextarea.Gutter;
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
 import ro.mihalea.cadets.barebones.logic.Listener;
@@ -14,8 +15,10 @@ import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.List;
 
@@ -58,6 +61,21 @@ public class BonesPanel extends JPanel {
      * ScrollPane used to contain the messageArea
      */
     private JScrollPane messagePane;
+
+    /**
+     * Scroll pane which contains the {@link this#textArea}
+     */
+    private RTextScrollPane scrollPane;
+
+    /**
+     * Object used to add the line tracking icons
+     */
+    private Gutter gutter;
+
+    /**
+     * Image of the line tracking symbol
+     */
+    private ImageIcon icon;
 
     /**
      * Creates a new JPanel containing a parent JFrame a list of listeners
@@ -136,7 +154,7 @@ public class BonesPanel extends JPanel {
                         output.append("Error caught ");
                         if(ex.getLine() != -1)
                             output.append("on line ").append(ex.getLine());
-                        output.append(": ").append(ex.getMessage());
+                        output.append(": ").append(ex.getMessage()).append('\n');
 
                         messageArea.setForeground(Color.RED);
 
@@ -156,6 +174,12 @@ public class BonesPanel extends JPanel {
         panel.add(run);
 
         JButton debug = new JButton("Debug");
+        debug.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
         panel.add(debug);
 
         this.add(panel, BorderLayout.PAGE_START);
@@ -175,7 +199,10 @@ public class BonesPanel extends JPanel {
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping("text/barebones", "ro.mihalea.cadets.barebones.ui.BonesSyntax");
         textArea.setSyntaxEditingStyle("text/barebones");
-        RTextScrollPane scrollPane = new RTextScrollPane(textArea);
+        scrollPane = new RTextScrollPane(textArea);
+        scrollPane.setIconRowHeaderEnabled(true);
+        gutter = scrollPane.getGutter();
+        icon = new ImageIcon("res/track.png");
 
         c.gridx = 0;
         c.gridy = 0;
