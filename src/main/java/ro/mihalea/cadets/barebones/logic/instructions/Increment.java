@@ -17,12 +17,7 @@ public class Increment extends BaseInstruction {
     /**
      * List of variables to be incremented
      */
-    private List<String> variables;
-
-
-    public Increment() {
-        variables = new ArrayList<>();
-    }
+    private List<String> variables = new ArrayList<>();
 
     /**
      * Increases the variable by one if set, otherwise sets it to 1

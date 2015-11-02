@@ -15,7 +15,7 @@ public class Clear extends BaseInstruction {
     /**
      * List of variables to be decremented
      */
-    private HashSet<String> variables;
+    private HashSet<String> variables = new HashSet<>();
 
     /**
      * Set the variables to zero and return the next consecutive program counter

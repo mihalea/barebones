@@ -17,7 +17,7 @@ public class Decrement extends BaseInstruction {
     /**
      * List of variables to be decremented
      */
-    private List<String> variables;
+    private List<String> variables = new ArrayList<>();
 
     /**
      * Decreases the variable by one if set, otherwise sets it to -1

@@ -23,7 +23,7 @@ public class Copy extends BaseInstruction {
     /**
      * Variables to which we copy
      */
-    List<String> dest;
+    List<String> dest = new ArrayList<>();
 
 
 
@@ -37,7 +37,6 @@ public class Copy extends BaseInstruction {
 
     @Override
     public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException {
-        dest = new ArrayList<>();
         if(args.size() < 3)
             throw new InvalidSyntaxException();
 
