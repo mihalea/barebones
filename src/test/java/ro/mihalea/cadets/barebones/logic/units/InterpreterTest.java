@@ -159,4 +159,26 @@ public class InterpreterTest extends TestCase {
                 "end;");
         assertEquals(55, memory.get("F"));
     }
+
+    public void testComment() throws NotAssignedException {
+        Interpreter interpreter = new Interpreter();
+        Memory memory = interpreter.run("incr x;\n" +
+                "#incr x");
+        assertEquals(1, memory.get("x"));
+
+        memory = interpreter.run("incr x;#incr x;");
+        assertEquals(1, memory.get("x"));
+
+        memory = interpreter.run("#: heya\n" +
+                "how you doing?\n" +
+                "incr x:#\n" +
+                "incr x;");
+        assertEquals(1, memory.get("x"));
+
+        memory = interpreter.run("#: multiline\n" +
+                "abcd:# incr x; #: bestie mica :# incr y; #incr x;\n" +
+                "incr x;");
+        assertEquals(2, memory.get("x"));
+        assertEquals(1, memory.get("y"));
+    }
 }

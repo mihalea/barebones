@@ -72,16 +72,4 @@ public class DecoderTest extends TestCase {
             System.out.println("Good");
         }
     }
-
-    public void testInvalidCharacter() throws Exception {
-        Decoder decoder = new Decoder();
-        assertNotNull(decoder);
-
-        try {
-            decoder.append("incr x; decr x2;");
-            decoder.append("incr sf#;");
-        } catch (InvalidCharacterException e) {
-            System.out.println("Good");
-        }
-    }
 }
