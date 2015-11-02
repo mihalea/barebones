@@ -1,5 +1,6 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
+import ro.mihalea.cadets.barebones.logic.exceptions.ExpectedNumberException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
@@ -18,6 +19,11 @@ public abstract class BaseInstruction {
     protected String REGEX_NAME = "[a-zA-Z_][a-zA-Z0-9_]*";
 
     /**
+     * Regex used in determining whether an argument is a valid number
+     */
+    protected String REGEX_NUM = "\\d+";
+
+    /**
      * Executes the instruction and returns the next program counter
      * @param programCounter Current program counter
      * @param memory Memory handler
@@ -30,5 +36,5 @@ public abstract class BaseInstruction {
      * @param args Arguments to be handled by the instruction
      * @return Final instruction
      */
-    public abstract BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException;
+    public abstract BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException, ExpectedNumberException;
 }

@@ -1,5 +1,6 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
+import ro.mihalea.cadets.barebones.logic.exceptions.ExpectedNumberException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
@@ -22,7 +23,8 @@ public class Init extends BaseInstruction {
     }
 
     @Override
-    public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException {
+    public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException,
+            ExpectedNumberException {
         if(args.size() != 3)
             throw new InvalidSyntaxException();
 
@@ -33,7 +35,11 @@ public class Init extends BaseInstruction {
         if(!args.pop().equals("="))
             throw new InvalidSyntaxException();
 
-        value = Long.parseLong(args.pop());
+        String rawValue = args.pop();
+        if(!Pattern.matches(REGEX_NAME, variable))
+            throw new ExpectedNumberException(rawValue);
+
+        value = Long.parseLong(rawValue);
         return this;
     }
 }

@@ -19,21 +19,20 @@ public class Decoder {
     /**
      * Decoded instruction buffer waiting to be sent to {@link Processor}
      */
-    private final List<BaseInstruction> instructions;
+    private final List<BaseInstruction> instructions = new ArrayList<>();
 
     /**
-     * Instantiates the fields
+     * Index of instructions starting a block waiting to be paired with an end
      */
-    public Decoder() {
-        instructions = new ArrayList<>();
-    }
+    private final Stack<Integer> blocks = new Stack<>();
+
 
     /**
      * Appends one or more lines of instructions to the current buffer
      * @param code One or more instructions
      */
     public void append(String code) throws BlockUnfinishedException, InvalidCharacterException,
-            UnknownInstructionException, InvalidSyntaxException, InvalidNamingException, NotTerminatedExpection {
+            UnknownInstructionException, InvalidSyntaxException, ExpectedNumberException, NotTerminatedExpection, InvalidNamingException {
         String[] statements = code.split(";");
         int lineCount = 0;
 
@@ -60,7 +59,7 @@ public class Decoder {
 
                     try {
                         instructions.add(this.decode(sanitized, lineCount));
-                    } catch (UnknownInstructionException|InvalidSyntaxException e) {
+                    } catch (UnknownInstructionException|InvalidSyntaxException|InvalidNamingException e) {
                         e.setLine(lineCount);
                         throw e;
                     }
@@ -75,7 +74,7 @@ public class Decoder {
      * @return Matching {@link BaseInstruction} implementation
      */
     private BaseInstruction decode(final String rawInstruction, final int lineIndex)
-            throws UnknownInstructionException, InvalidSyntaxException, InvalidNamingException {
+            throws InvalidNamingException, InvalidSyntaxException, ExpectedNumberException, UnknownInstructionException {
         /**
          * Adds all the tokes to a LinkedList (which implements Queue)
          */
@@ -99,15 +98,16 @@ public class Decoder {
             case "init":
                 return new Init().decode(arguments);
             case "while":
-                break;
+                blocks.push(instructions.size());
+                return new While().decode(arguments);
             case "end":
-                break;
+                Integer matchingIndex = blocks.pop();
+                ((BlockInstruction)instructions.get(matchingIndex)).setPairIndex(instructions.size());
+                arguments.push(matchingIndex.toString());
+                return new End().decode(arguments);
             default:
                 throw new UnknownInstructionException(lineIndex);
         }
-
-        //!! TO BE REMOVED AFTER THE SWITCH IS DONE !!
-        return null;
     }
 
     /**

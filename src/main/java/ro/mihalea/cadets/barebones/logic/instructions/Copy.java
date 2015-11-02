@@ -1,5 +1,6 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
+import ro.mihalea.cadets.barebones.logic.exceptions.ExpectedNumberException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
@@ -48,9 +49,8 @@ public class Copy extends BaseInstruction {
             throw new InvalidSyntaxException();
 
         for(String arg : args) {
-            if (!Pattern.matches(REGEX_NAME, arg))
+            if(!Pattern.matches(REGEX_NAME, arg))
                 throw new InvalidNamingException(arg);
-
             dest.add(arg);
         }
 
