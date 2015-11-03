@@ -25,7 +25,7 @@ public class IfConditional extends BlockInstruction {
             return programCounter + 1;
         else {
             Evaluator ev = new Evaluator(memory);
-            if(ev.evaluate(expression) == 1)
+            if(ev.evaluate(expression) != 0)
                 return programCounter + 1;
             else
                 return pairIndex;
