@@ -25,6 +25,16 @@ public class Decoder {
      */
     private boolean isMultiLineComment = false;
 
+    /**
+     * Holds the indices of the last instruction in a conditional block so that they can be redirected
+     * to the end of the chained block
+     */
+    private LinkedList<Integer> finalInstructions = new LinkedList<>();
+
+    /**
+     * Contains the number of branches of each level of the nested ifs
+     */
+    private LinkedList<Integer> branches = new LinkedList<>();
 
     /**
      * Appends one or more lines of instructions to the current buffer
@@ -83,7 +93,8 @@ public class Decoder {
      * @return Matching {@link BaseInstruction} implementation
      */
     private BaseInstruction decode(String rawInstruction, final int lineIndex)
-            throws InvalidNamingException, InvalidSyntaxException, ExpectedNumberException, UnknownInstructionException, UnexpectedBlockCloseException {
+            throws InvalidNamingException, InvalidSyntaxException, ExpectedNumberException,
+            UnknownInstructionException, UnexpectedBlockCloseException, InvalidCharacterException {
 
         rawInstruction = rawInstruction.trim();
         if(!rawInstruction.isEmpty()) {
@@ -111,13 +122,19 @@ public class Decoder {
                 case "while":
                     blocks.push(instructions.size());
                     return new While(lineIndex).decode(arguments);
+                case "if":
+                    blocks.push(instructions.size());
+                    branches.push(1);
+                    return new IfConditional(lineIndex).decode(arguments);
+                case "elif":
+                case "else":
+                    Integer tmp = branches.peek(); tmp++;
+                    blocks.push(instructions.size());
+                    finalInstructions.push(instructions.size() - 1);
+                    this.pairInstructions(arguments, instructions.size());
+                    return new IfConditional(lineIndex).decode(arguments);
                 case "end":
-                    if(blocks.size() <= 0)
-                        throw new UnexpectedBlockCloseException();
-
-                    Integer matchingIndex = blocks.pop();
-                    ((BlockInstruction) instructions.get(matchingIndex)).setPairIndex(instructions.size());
-                    arguments.add(matchingIndex.toString());
+                    this.pairInstructions(arguments, lineIndex);
                     return new End(lineIndex).decode(arguments);
                 default:
                     throw new UnknownInstructionException(instruction, lineIndex);
@@ -125,6 +142,21 @@ public class Decoder {
         } else {
             return null;
         }
+    }
+
+    private void pairInstructions(LinkedList<String> arguments, int programCounter) throws UnexpectedBlockCloseException {
+        if(branches.size() > 0)
+            for (int remaining = branches.pop() ; remaining > 0 ; remaining--)
+                instructions.get(finalInstructions.pop()).setLineIndex(programCounter);
+
+        if(blocks.size() <= 0)
+            throw new UnexpectedBlockCloseException();
+
+        //Integer instead of int so it can be casted to String easier
+        Integer matchingIndex = blocks.pop();
+        ((BlockInstruction) instructions.get(matchingIndex)).setPairIndex(programCounter);
+
+        arguments.addFirst(matchingIndex.toString());
     }
 
     /**

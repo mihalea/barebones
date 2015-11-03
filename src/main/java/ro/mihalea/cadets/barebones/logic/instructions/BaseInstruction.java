@@ -39,9 +39,13 @@ public abstract class BaseInstruction {
      * @throws InvalidNamingException One or more variables do not follow the naming specification
      * @throws ExpectedNumberException Expected a number instead of a variable name
      */
-    public abstract BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException, ExpectedNumberException;
+    public abstract BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException, ExpectedNumberException, InvalidCharacterException;
 
     public int getLineIndex() {
         return lineIndex;
+    }
+
+    public void setLineIndex(int lineIndex) {
+        this.lineIndex = lineIndex;
     }
 }

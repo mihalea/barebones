@@ -66,21 +66,21 @@ public class Evaluator {
             token = input.remove();
 
             if(Evaluator.isNumber(token))
-                //If number push it to value stack
+                //IfConditional number push it to value stack
                 values.push(Long.parseLong(token));
             else if(Evaluator.isVariable(token))
-                //If variable get value and push it to value stack
+                //IfConditional variable get value and push it to value stack
                 values.push(memory.get(token));
             else if(Evaluator.isOperator(token)) {
                 char operator = token.charAt(0);
 
                 switch (operator) {
                     case '(':
-                        //If open parenthesis push it to operator stack
+                        //IfConditional open parenthesis push it to operator stack
                         operators.push(operator);
                         break;
                     case ')':
-                        //If closed parenthesis remove all operators from the queue until the pair is
+                        //IfConditional closed parenthesis remove all operators from the queue until the pair is
                         //encountered and then dispose both of them
                         while(!operators.isEmpty() && operators.peek() != '(')
                             values.push(operate(values.pop(), values.pop(), operators.pop()));
@@ -90,7 +90,7 @@ public class Evaluator {
                             throw new InvalidExpressionException("Unmatched paranthesis");
                         break;
                     default:
-                        //If not parenthesis, then it must be an operator, so use it on the value queue
+                        //IfConditional not parenthesis, then it must be an operator, so use it on the value queue
                         while(!operators.isEmpty() && precedence(operators.peek()) >= precedence(operator)) {
                             values.push(operate(values.pop(), values.pop(), operators.pop()));
                         }
@@ -106,7 +106,7 @@ public class Evaluator {
             values.push(operate(values.pop(), values.pop(), operators.pop()));
         }
 
-        //If there are more values remaining, then the expression is invalid
+        //IfConditional there are more values remaining, then the expression is invalid
         if(values.size() != 1)
             throw new InvalidExpressionException();
 

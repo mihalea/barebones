@@ -29,7 +29,7 @@ public class BonesFrame extends JFrame {
 
     /**
      * Initiates the window and sets all the settings
-     * @throws HeadlessException If the environment is without a monitor
+     * @throws HeadlessException IfConditional the environment is without a monitor
      */
     public BonesFrame() throws HeadlessException {
         /**
