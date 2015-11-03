@@ -112,6 +112,9 @@ public class Decoder {
                     blocks.push(instructions.size());
                     return new While(lineIndex).decode(arguments);
                 case "end":
+                    if(blocks.size() <= 0)
+                        throw new UnexpectedBlockCloseException();
+
                     Integer matchingIndex = blocks.pop();
                     ((BlockInstruction) instructions.get(matchingIndex)).setPairIndex(instructions.size());
                     arguments.add(matchingIndex.toString());
