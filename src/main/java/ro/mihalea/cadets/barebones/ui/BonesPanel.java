@@ -16,11 +16,16 @@ import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.List;
 
@@ -308,13 +313,102 @@ public class BonesPanel extends JPanel {
         JMenu file = new JMenu("File");
 
         JMenuItem file_new = new JMenuItem("New");
+        file_new.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createNewDocument();
+            }
+        });
         file.add(file_new);
 
         JMenuItem file_open = new JMenuItem("Open");
+        file_open.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openDocument();
+            }
+        });
         file.add(file_open);
+
+        JMenuItem file_save = new JMenuItem("Save");
+        file_save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveDocument();
+            }
+        });
+        file.add(file_save);
 
         menuBar.add(file);
 
         parent.setJMenuBar(menuBar);
+    }
+
+    private boolean createNewDocument() {
+        if(this.textArea.getText().length() > 0) {
+            int option = JOptionPane.showConfirmDialog(this, "Do you want to save the file first?",
+                    "Save", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+            switch (option) {
+                case 0:
+                    showFileDialog("Save");
+                    return true;
+                case 1:
+                    this.textArea.setText("");
+                    return true;
+                case 2:
+                default:
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void openDocument() {
+        try {
+            if(createNewDocument()) {
+                File file = showFileDialog("Open");
+                if (file != null) {
+                    List<String> lines = Files.readAllLines(Paths.get(file.getAbsolutePath()));
+                    String text = String.join("\n", lines);
+                    this.textArea.setText(text);
+
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Could not open file", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void saveDocument() {
+        try {
+            File file = showFileDialog("Save");
+            if(file != null)
+                Files.write(Paths.get(file.getAbsolutePath()), textArea.getText().getBytes());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Could not save file", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private File showFileDialog(String title) {
+        JFileChooser chooser = new JFileChooser();
+
+        chooser.setCurrentDirectory(chooser.getFileSystemView().getDefaultDirectory());
+        chooser.setFileFilter(new FileNameExtensionFilter("Barebones Files", "bb"));
+        chooser.setMultiSelectionEnabled(false);
+
+        if(0 == chooser.showDialog(this, title)) {
+            File file = chooser.getSelectedFile();
+            String path = file.getAbsolutePath();
+            if(!path.endsWith(".bb"))
+                file = new File(path + ".bb");
+
+            return file;
+        }
+
+        return null;
     }
 }
