@@ -6,7 +6,6 @@ import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
 import ro.mihalea.cadets.barebones.events.ResultResponse;
 import ro.mihalea.cadets.barebones.logic.exceptions.*;
-import ro.mihalea.cadets.barebones.logic.instructions.BaseInstruction;
 import ro.mihalea.cadets.barebones.logic.units.Decoder;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 import ro.mihalea.cadets.barebones.logic.units.Processor;
@@ -62,7 +61,7 @@ public class Interpreter {
             @Override
             public EventResponse nextDebug() {
                 try {
-                    Memory memory = Interpreter.this.next();
+                    Memory memory = Interpreter.this.nextLine();
                     return new DebugResponse(0, memory, processor.getLineIndex());
 
                 } catch (NotAssignedException|InvalidExpressionException|InvalidCharacterException e) {
@@ -109,7 +108,14 @@ public class Interpreter {
     }
 
 
-    public Memory next() throws NotAssignedException, InvalidCharacterException, InvalidExpressionException {
+    /**
+     * Executes instructions while they are on the same line
+     * @return Memory state
+     * @throws NotAssignedException Value not assigned before usage
+     * @throws InvalidCharacterException Invalid character
+     * @throws InvalidExpressionException Invalid expression
+     */
+    public Memory nextLine() throws NotAssignedException, InvalidCharacterException, InvalidExpressionException {
         int startIndex = processor.getLineIndex();
         int index;
         Memory memory;

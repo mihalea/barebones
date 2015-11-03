@@ -101,6 +101,7 @@ public class Evaluator {
 
         //Operate on all remaining operators
         while(!operators.isEmpty()) {
+            //Currently all operators are binary operators
             if(values.size() < 2)
                 throw new InvalidExpressionException();
             values.push(operate(values.pop(), values.pop(), operators.pop()));

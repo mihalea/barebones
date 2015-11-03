@@ -100,6 +100,9 @@ public class Processor {
             return -1;
     }
 
+    /**
+     * Dumps the current instruction set to the stdout
+     */
     public void dump() {
         System.out.println("\n=== INSTRUCTION DUMP===");
         for (BaseInstruction instruction : instructions)
