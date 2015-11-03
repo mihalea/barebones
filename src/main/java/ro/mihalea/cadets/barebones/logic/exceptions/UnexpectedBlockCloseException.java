@@ -14,6 +14,6 @@ public class UnexpectedBlockCloseException extends BonesException {
     }
 
     public UnexpectedBlockCloseException(String additional, int line) {
-        super("A block has been expected where none where expected", additional, line);
+        super("A block has been closed where none where expected", additional, line);
     }
 }

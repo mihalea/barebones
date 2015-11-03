@@ -3,6 +3,7 @@ package ro.mihalea.cadets.barebones.logic.units;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
 import ro.mihalea.cadets.barebones.logic.exceptions.InvalidExpressionException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.TimeoutException;
 import ro.mihalea.cadets.barebones.logic.instructions.BaseInstruction;
 
 import java.util.List;
@@ -11,6 +12,11 @@ import java.util.List;
  * Created by Mircea on 31-Oct-15.
  */
 public class Processor {
+    /**
+     * Threshold in milliseconds after which the Processor should abort execution
+     */
+    private final int TIMEOUT = 5000;
+
     /**
      * List of instructions waiting to be executed
      */
@@ -48,11 +54,25 @@ public class Processor {
      * Runs the complete current instruction set
      * @return The final state of the Memory
      */
-    public Memory run() throws NotAssignedException, InvalidCharacterException, InvalidExpressionException {
-        while(programCounter != -1)
+    public Memory run() throws NotAssignedException, InvalidCharacterException, InvalidExpressionException, TimeoutException {
+        long startTime = System.nanoTime();
+        while(programCounter != -1) {
             this.next();
+            if(timeIsOut(startTime))
+                throw new TimeoutException();
+        }
 
         return memory;
+    }
+
+    /**
+     * Checks whther the interpreter has exceeded the maximum amount of time it is allowed to run
+     * @param startTime Start time in nanoseconds
+     * @return True is the interpreter should timeout
+     */
+    private boolean timeIsOut(final long startTime) {
+        //Converts nanoseconds (10^-9) to milliseconds (10^-3)
+        return ((System.nanoTime() - startTime) / 1000000)  > TIMEOUT;
     }
 
     /**

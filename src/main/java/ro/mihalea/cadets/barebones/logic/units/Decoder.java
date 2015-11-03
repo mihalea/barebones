@@ -134,7 +134,7 @@ public class Decoder {
                     this.pairInstructions(arguments, instructions.size());
                     return new IfConditional(lineIndex).decode(arguments);
                 case "end":
-                    this.pairInstructions(arguments, lineIndex);
+                    this.pairInstructions(arguments, instructions.size());
                     return new End(lineIndex).decode(arguments);
                 default:
                     throw new UnknownInstructionException(instruction, lineIndex);
