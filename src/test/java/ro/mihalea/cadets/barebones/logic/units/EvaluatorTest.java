@@ -148,11 +148,89 @@ public class EvaluatorTest extends TestCase {
 
         assertEquals(0, result);
 
+
         expression.clear();
         expression.add("a");
         expression.add(">");
         expression.add("b");
 
         assertEquals(1, evaluator.evaluate(expression));
+
+        expression.clear();
+        expression.add("a");
+        expression.add(">=");
+        expression.add("5");
+
+        assertEquals(1, evaluator.evaluate(expression));
+
+        expression.clear();
+        expression.add("a");
+        expression.add(">=");
+        expression.add("10");
+
+        assertEquals(0, evaluator.evaluate(expression));
+
+        expression.clear();
+        expression.add("b");
+        expression.add("<=");
+        expression.add("3");
+
+        assertEquals(1, evaluator.evaluate(expression));
+
+        expression.clear();
+        expression.add("b");
+        expression.add("<=");
+        expression.add("2");
+
+        assertEquals(0, evaluator.evaluate(expression));
+
+        expression.clear();
+        expression.add("a");
+        expression.add(">=");
+        expression.add("5");
+
+        assertEquals(1, evaluator.evaluate(expression));
+
+        expression.clear();
+        expression.add("a");
+        expression.add(">=");
+        expression.add("22");
+
+        assertEquals(0, evaluator.evaluate(expression));
+    }
+
+    public void testEquality() throws InvalidCharacterException, NotAssignedException, InvalidExpressionException {
+        Memory memory = new Memory();
+        memory.set("a", 5);
+        memory.set("b", 3);
+
+        LinkedList<String> expression = new LinkedList<>();
+        expression.add("a");
+        expression.add("==");
+        expression.add("b");
+
+        Evaluator evaluator = new Evaluator(memory);
+        assertEquals(0, evaluator.evaluate(expression));
+
+        expression.clear();
+        expression.add("a");
+        expression.add("==");
+        expression.add("5");
+
+        assertEquals(1, evaluator.evaluate(expression));
+
+        expression.clear();
+        expression.add("a");
+        expression.add("!=");
+        expression.add("5");
+
+        assertEquals(0, evaluator.evaluate(expression));
+
+        expression.clear();
+        expression.add("b");
+        expression.add("!=");
+        expression.add("3");
+
+        assertEquals(0, evaluator.evaluate(expression));
     }
 }

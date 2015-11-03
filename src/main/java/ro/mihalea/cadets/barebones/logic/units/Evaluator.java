@@ -28,7 +28,7 @@ public class Evaluator {
     /**
      * Regex used in determining wheter an argument is an operator or not
      */
-    private static String RX_OPERATOR = "[\\Q+-*/()^<>\\E]";
+    private static String RX_OPERATOR = "[\\Q+-*/()^<>=!\\E]{1,2}";
 
     /**
      * Memory on which to apply actions
@@ -56,7 +56,7 @@ public class Evaluator {
         //Values get stored here until they are used
         Stack<Long> values = new Stack<>();
         //Operators are stored here until they are used
-        Stack<Character> operators = new Stack<>();
+        Stack<String> operators = new Stack<>();
         //Copy the values so that we can use the same instruction multiple times
         LinkedList<String> input = new LinkedList<>(elements);
 
@@ -72,29 +72,27 @@ public class Evaluator {
                 //IfConditional variable get value and push it to value stack
                 values.push(memory.get(token));
             else if(Evaluator.isOperator(token)) {
-                char operator = token.charAt(0);
-
-                switch (operator) {
-                    case '(':
+                switch (token) {
+                    case "(":
                         //IfConditional open parenthesis push it to operator stack
-                        operators.push(operator);
+                        operators.push(token);
                         break;
-                    case ')':
+                    case ")":
                         //IfConditional closed parenthesis remove all operators from the queue until the pair is
                         //encountered and then dispose both of them
-                        while(!operators.isEmpty() && operators.peek() != '(')
+                        while(!operators.isEmpty() && !operators.peek().equals("("))
                             values.push(operate(values.pop(), values.pop(), operators.pop()));
-                        if(operators.peek() == '(')
+                        if(operators.peek().equals("("))
                             operators.pop();
                         else
                             throw new InvalidExpressionException("Unmatched paranthesis");
                         break;
                     default:
                         //IfConditional not parenthesis, then it must be an operator, so use it on the value queue
-                        while(!operators.isEmpty() && precedence(operators.peek()) >= precedence(operator)) {
+                        while(!operators.isEmpty() && precedence(operators.peek()) >= precedence(token)) {
                             values.push(operate(values.pop(), values.pop(), operators.pop()));
                         }
-                        operators.push(operator);
+                        operators.push(token);
                 }
 
 
@@ -123,22 +121,30 @@ public class Evaluator {
      * @return Value of the operation
      * @throws InvalidCharacterException Invalid character used as an operator
      */
-    private long operate(long a, long b, char operator) throws InvalidCharacterException {
+    private long operate(long a, long b, String operator) throws InvalidCharacterException {
         switch (operator){
-            case '+':
+            case "+":
                 return b+a;
-            case '-':
+            case "-":
                 return b-a;
-            case '*':
+            case "*":
                 return b*a;
-            case '/':
+            case "/":
                 return b/a;
-            case '^':
+            case "^":
                 return (long) Math.pow(b, a);
-            case '<':
+            case "<":
                 return b < a ? 1 : 0;
-            case '>':
+            case ">":
                 return b > a ? 1 : 0;
+            case "<=":
+                return b <= a ? 1 : 0;
+            case ">=":
+                return b >= a ? 1 : 0;
+            case "==":
+                return b == a ? 1 : 0;
+            case "!=":
+                return b != a ? 1 : 0;
             default:
                 throw new InvalidCharacterException("Operator not valid");
         }
@@ -176,20 +182,24 @@ public class Evaluator {
      * @param operator Operator to be used
      * @return Precedence level
      */
-    private int precedence(char operator) {
+    private int precedence(String operator) {
         switch(operator) {
-            case '^':
+            case "^":
                 return 5;
-            case '*':
-            case '/':
+            case "*":
+            case "/":
                 return 4;
-            case '+':
-            case '-':
+            case "+":
+            case "-":
                 return 3;
-            case '<':
-            case '>':
+            case "<":
+            case ">":
+            case "<=":
+            case ">=":
+            case "==":
+            case "!=":
                 return 2;
-            case '(':
+            case "(":
                 return 1;
             default:
                 return -1;
