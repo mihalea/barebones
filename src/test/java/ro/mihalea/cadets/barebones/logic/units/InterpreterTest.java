@@ -186,4 +186,58 @@ public class InterpreterTest extends TestCase {
         assertEquals(2, memory.get("x"));
         assertEquals(1, memory.get("y"));
     }
+
+    public void testConditional() throws Exception {
+        Interpreter interpreter = new Interpreter();
+        Memory memory = interpreter.run("init x = 2;" +
+                "init y = 5;" +
+                "if x > y;" +
+                "incr y;" +
+                "else;" +
+                "incr x;" +
+                "end;");
+        assertEquals(3, memory.get("x"));
+        assertEquals(5, memory.get("y"));
+
+        memory = interpreter.run("init x = 3;" +
+                "if x < 5;" +
+                "incr x;" +
+                "end;");
+        assertEquals(4, memory.get("x"));
+
+        memory = interpreter.run("init x = 3; clear y;" +
+                "if x > 3;" +
+                "init y = 1;" +
+                "elif x < 3;" +
+                "init y = 2;" +
+                "else;" +
+                "init y = 3;" +
+                "end;");
+        assertEquals(3, memory.get("y"));
+
+        memory = interpreter.run("init x = 3; clear y;" +
+                "if x > 5;" +
+                "init y = 1;" +
+                "elif x > 4;" +
+                "init y = 2;" +
+                "elif x > 3;" +
+                "init y = 3;" +
+                "elif x > 2;" +
+                "init y = 4;" +
+                "end;");
+        assertEquals(4, memory.get("y"));
+
+        memory = interpreter.run("init x = 2; init y = 5;" +
+                "if x > 2;" +
+                "init y = 0;" +
+                "else;" +
+                "if x < 10;" +
+                "init y = 1;" +
+                "else;" +
+                "init y = 2;" +
+                "end;" +
+                "end;");
+
+        assertEquals(1, memory.get("y"));
+    }
 }

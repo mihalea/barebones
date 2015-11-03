@@ -7,6 +7,8 @@ import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Block Instruction referencing back to the matching one
@@ -32,6 +34,7 @@ public class End extends BlockInstruction {
      */
     @Override
     public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException {
+
         /**
          * The only argument must be the index of the matching instruction
          */
@@ -43,7 +46,12 @@ public class End extends BlockInstruction {
          * is an Integer casted as a String, therefore there shouldn't be any
          * casting issues
          */
-        pairIndex = Integer.parseInt(args.pop());
+        Pattern pattern = Pattern.compile("pair=([0-9]+)");
+        Matcher matcher = pattern.matcher(args.peek());
+        if(matcher.find()) {
+            this.setPairIndex(Integer.parseInt(matcher.group(1)));
+            args.pop();
+        }
 
         return this;
     }

@@ -39,7 +39,7 @@ public class Copy extends BaseInstruction {
         Evaluator evaluator = new Evaluator(memory);
         long result = evaluator.evaluate(expression);
         memory.set(dest, result);
-        return programCounter + 1;
+        return this.proposeCounter(programCounter + 1);
     }
 
     /**

@@ -99,4 +99,11 @@ public class Processor {
         else
             return -1;
     }
+
+    public void dump() {
+        System.out.println("\n=== INSTRUCTION DUMP===");
+        for (BaseInstruction instruction : instructions)
+            System.out.println(instruction);
+        System.out.println(  "=======================");
+    }
 }

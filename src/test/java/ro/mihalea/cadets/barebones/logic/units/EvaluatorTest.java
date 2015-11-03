@@ -9,6 +9,7 @@ import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
 import java.util.LinkedList;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Mircea on 02-Nov-15.
@@ -130,5 +131,28 @@ public class EvaluatorTest extends TestCase {
         long result = evaluator.evaluate(expression);
 
         assertEquals(24, result);
+    }
+
+    public void testGreaterLesser() throws InvalidCharacterException, NotAssignedException, InvalidExpressionException {
+        Memory memory = new Memory();
+        memory.set("a", 5);
+        memory.set("b", 3);
+
+        LinkedList<String> expression = new LinkedList<>();
+        expression.add("a");
+        expression.add("<");
+        expression.add("b");
+
+        Evaluator evaluator = new Evaluator(memory);
+        long result = evaluator.evaluate(expression);
+
+        assertEquals(0, result);
+
+        expression.clear();
+        expression.add("a");
+        expression.add(">");
+        expression.add("b");
+
+        assertEquals(1, evaluator.evaluate(expression));
     }
 }

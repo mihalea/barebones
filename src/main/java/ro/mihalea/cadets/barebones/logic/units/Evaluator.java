@@ -28,7 +28,7 @@ public class Evaluator {
     /**
      * Regex used in determining wheter an argument is an operator or not
      */
-    private static String RX_OPERATOR = "[\\Q+-*/()^\\E]";
+    private static String RX_OPERATOR = "[\\Q+-*/()^<>\\E]";
 
     /**
      * Memory on which to apply actions
@@ -103,6 +103,8 @@ public class Evaluator {
 
         //Operate on all remaining operators
         while(!operators.isEmpty()) {
+            if(values.size() < 2)
+                throw new InvalidExpressionException();
             values.push(operate(values.pop(), values.pop(), operators.pop()));
         }
 
@@ -133,6 +135,10 @@ public class Evaluator {
                 return b/a;
             case '^':
                 return (long) Math.pow(b, a);
+            case '<':
+                return b < a ? 1 : 0;
+            case '>':
+                return b > a ? 1 : 0;
             default:
                 throw new InvalidCharacterException("Operator not valid");
         }
@@ -173,12 +179,15 @@ public class Evaluator {
     private int precedence(char operator) {
         switch(operator) {
             case '^':
-                return 4;
+                return 5;
             case '*':
             case '/':
-                return 3;
+                return 4;
             case '+':
             case '-':
+                return 3;
+            case '<':
+            case '>':
                 return 2;
             case '(':
                 return 1;

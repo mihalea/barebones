@@ -43,7 +43,7 @@ public class Increment extends BaseInstruction {
             }
         }
 
-        return programCounter + 1;
+        return this.proposeCounter(programCounter + 1);
     }
 
     /**

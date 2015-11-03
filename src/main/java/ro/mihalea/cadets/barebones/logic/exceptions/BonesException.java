@@ -52,6 +52,6 @@ public abstract class BonesException extends Exception {
 
     @Override
     public String toString() {
-        return getMessage() + "[" + getLine() + "]";
+        return getMessage();
     }
 }

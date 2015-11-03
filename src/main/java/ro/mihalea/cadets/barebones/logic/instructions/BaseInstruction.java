@@ -17,6 +17,11 @@ public abstract class BaseInstruction {
      */
     protected int lineIndex;
 
+    /**
+     * Used for jumping out of conditionals
+     */
+    protected int nextCounter = -1;
+
     public BaseInstruction(int lineIndex) {
         this.lineIndex = lineIndex;
     }
@@ -41,11 +46,29 @@ public abstract class BaseInstruction {
      */
     public abstract BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException, ExpectedNumberException, InvalidCharacterException;
 
+    public int proposeCounter(int proposed) {
+        return nextCounter == -1 ? proposed : nextCounter;
+    }
+
     public int getLineIndex() {
         return lineIndex;
     }
 
-    public void setLineIndex(int lineIndex) {
-        this.lineIndex = lineIndex;
+    public int getNextCounter() {
+        return nextCounter;
+    }
+
+    public void setNextCounter(int nextCounter) {
+        this.nextCounter = nextCounter;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.getClass().getSimpleName()).append(":");
+        builder.append(" lineIndex=").append(lineIndex);
+        if(nextCounter != -1)
+            builder.append(" nextCounter=").append(nextCounter);
+        return builder.toString();
     }
 }

@@ -34,7 +34,7 @@ public class Decoder {
     /**
      * Contains the number of branches of each level of the nested ifs
      */
-    private LinkedList<Integer> branches = new LinkedList<>();
+    private Stack<Integer> branches = new Stack<>();
 
     /**
      * Appends one or more lines of instructions to the current buffer
@@ -128,13 +128,13 @@ public class Decoder {
                     return new IfConditional(lineIndex).decode(arguments);
                 case "elif":
                 case "else":
-                    Integer tmp = branches.peek(); tmp++;
-                    blocks.push(instructions.size());
+                    //branches.push(branches.pop() + 1);
                     finalInstructions.push(instructions.size() - 1);
-                    this.pairInstructions(arguments, instructions.size());
+                    this.pairInstructions(arguments, instructions.size(), false);
+                    blocks.push(instructions.size());
                     return new IfConditional(lineIndex).decode(arguments);
                 case "end":
-                    this.pairInstructions(arguments, instructions.size());
+                    this.pairInstructions(arguments, instructions.size(), true);
                     return new End(lineIndex).decode(arguments);
                 default:
                     throw new UnknownInstructionException(instruction, lineIndex);
@@ -144,19 +144,34 @@ public class Decoder {
         }
     }
 
-    private void pairInstructions(LinkedList<String> arguments, int programCounter) throws UnexpectedBlockCloseException {
-        if(branches.size() > 0)
-            for (int remaining = branches.pop() ; remaining > 0 ; remaining--)
-                instructions.get(finalInstructions.pop()).setLineIndex(programCounter);
-
+    /**
+     * Links block instruction matching statements
+     * @param arguments List of arguments
+     * @param programCounter Current program counter
+     * @param clearIfs Clear the stack of ifs on the current level
+     * @throws UnexpectedBlockCloseException Unexpected end
+     */
+    private void pairInstructions(LinkedList<String> arguments, int programCounter, boolean clearIfs) throws UnexpectedBlockCloseException {
         if(blocks.size() <= 0)
             throw new UnexpectedBlockCloseException();
 
         //Integer instead of int so it can be casted to String easier
-        Integer matchingIndex = blocks.pop();
-        ((BlockInstruction) instructions.get(matchingIndex)).setPairIndex(programCounter);
+        int matchingIndex = blocks.pop();
+        BlockInstruction match = (BlockInstruction) instructions.get(matchingIndex);
+        match.setPairIndex(programCounter);
 
-        arguments.addFirst(matchingIndex.toString());
+        if(match instanceof While) {
+            arguments.addFirst("pair=" + Integer.toString(matchingIndex));
+        } else {
+            if (clearIfs) {
+                if(finalInstructions.size() > 0 && branches.size() > 0)
+                    for (int remaining = branches.pop(); remaining > 0; remaining--)
+                        instructions.get(finalInstructions.pop()).setNextCounter(programCounter);
+                else
+                    instructions.get(programCounter-1).setNextCounter(programCounter);
+            }
+            arguments.addFirst("pair=" + Integer.toString(programCounter + 1));
+        }
     }
 
     /**

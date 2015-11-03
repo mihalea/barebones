@@ -36,7 +36,7 @@ public class Init extends BaseInstruction {
     @Override
     public int execute(int programCounter, Memory memory)  {
         memory.set(variable, value);
-        return programCounter + 1;
+        return this.proposeCounter(programCounter + 1);
     }
 
     @Override

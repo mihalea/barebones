@@ -23,4 +23,9 @@ public abstract class BlockInstruction extends BaseInstruction {
     public void setPairIndex(int pairIndex) {
         this.pairIndex = pairIndex;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + " pairIndex=" + pairIndex;
+    }
 }

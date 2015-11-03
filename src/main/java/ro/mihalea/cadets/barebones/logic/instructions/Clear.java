@@ -32,7 +32,7 @@ public class Clear extends BaseInstruction {
         for(String var : variables)
                 memory.set(var, 0);
 
-        return programCounter + 1;
+        return this.proposeCounter(programCounter + 1);
     }
 
     /**
