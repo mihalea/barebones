@@ -49,4 +49,9 @@ public abstract class BonesException extends Exception {
     public void setAdditional(String additional) {
         this.additional = additional;
     }
+
+    @Override
+    public String toString() {
+        return getMessage() + "[" + getLine() + "]";
+    }
 }

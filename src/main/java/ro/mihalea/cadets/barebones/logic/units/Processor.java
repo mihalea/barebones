@@ -1,5 +1,7 @@
 package ro.mihalea.cadets.barebones.logic.units;
 
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidCharacterException;
+import ro.mihalea.cadets.barebones.logic.exceptions.InvalidExpressionException;
 import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
 import ro.mihalea.cadets.barebones.logic.instructions.BaseInstruction;
 
@@ -46,7 +48,7 @@ public class Processor {
      * Runs the complete current instruction set
      * @return The final state of the Memory
      */
-    public Memory run() throws NotAssignedException{
+    public Memory run() throws NotAssignedException, InvalidCharacterException, InvalidExpressionException {
         while(programCounter != -1)
             this.next();
 
@@ -57,7 +59,7 @@ public class Processor {
      * Runs the next instruction in the instruction set
      * @return Returns the final state of the variables
      */
-    public Memory next() throws NotAssignedException {
+    public Memory next() throws NotAssignedException, InvalidCharacterException, InvalidExpressionException {
         if(programCounter < instructions.size())
             programCounter = instructions.get(programCounter).execute(programCounter, memory);
 

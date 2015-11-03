@@ -1,8 +1,6 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
-import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
-import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
-import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.*;
 import ro.mihalea.cadets.barebones.logic.units.Evaluator;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
@@ -10,7 +8,7 @@ import java.util.LinkedList;
 
 /**
  * Instruction that copies the value of one variable to a list of value
- * Syntax: copy [expr] to [dest...]
+ * Syntax: copy [expr] to [dest]
  */
 public class Copy extends BaseInstruction {
     /**
@@ -32,11 +30,15 @@ public class Copy extends BaseInstruction {
      * Sets the value of all the variables in dest to the value of source
      * @param programCounter Current program counter
      * @param memory Memory handler
-     * @return Next consectuive instruction
+     * @return Next consecutive instruction
      * @throws NotAssignedException The source variable has not been assigned a value prior to execution
      */
     @Override
-    public int execute(int programCounter, Memory memory) throws NotAssignedException {
+    public int execute(int programCounter, Memory memory) throws NotAssignedException,
+            InvalidCharacterException, InvalidExpressionException {
+        Evaluator evaluator = new Evaluator(memory);
+        long result = evaluator.evaluate(expression);
+        memory.set(dest, result);
         return programCounter + 1;
     }
 

@@ -5,9 +5,7 @@ import ro.mihalea.cadets.barebones.events.DebugResponse;
 import ro.mihalea.cadets.barebones.events.ErrorResponse;
 import ro.mihalea.cadets.barebones.events.EventResponse;
 import ro.mihalea.cadets.barebones.events.ResultResponse;
-import ro.mihalea.cadets.barebones.logic.exceptions.BlockUnfinishedException;
-import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
-import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.*;
 import ro.mihalea.cadets.barebones.logic.units.Decoder;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 import ro.mihalea.cadets.barebones.logic.units.Processor;
@@ -66,7 +64,7 @@ public class Interpreter {
                     Memory memory = Interpreter.this.next();
                     return new DebugResponse(0, memory, processor.getLineIndex());
 
-                } catch (NotAssignedException e) {
+                } catch (NotAssignedException|InvalidExpressionException|InvalidCharacterException e) {
                     return new ErrorResponse(0, e);
                 }
             }
@@ -91,7 +89,7 @@ public class Interpreter {
             throw new BlockUnfinishedException();
     }
 
-    public Memory next() throws NotAssignedException {
+    public Memory next() throws NotAssignedException, InvalidCharacterException, InvalidExpressionException {
         int startIndex = processor.getLineIndex();
         int index;
         Memory memory;

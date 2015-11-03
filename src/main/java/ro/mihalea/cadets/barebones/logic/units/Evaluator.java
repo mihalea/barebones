@@ -40,10 +40,11 @@ public class Evaluator {
             InvalidExpressionException {
         Stack<Long> values = new Stack<>();
         Stack<Character> operators = new Stack<>();
+        LinkedList<String> input = new LinkedList<>(elements);
 
         String token;
-        while(!elements.isEmpty()) {
-            token = elements.pop();
+        while(!input.isEmpty()) {
+            token = input.pop();
             if(Evaluator.isNumber(token))
                 values.push(Long.parseLong(token));
             else if(Evaluator.isVariable(token))

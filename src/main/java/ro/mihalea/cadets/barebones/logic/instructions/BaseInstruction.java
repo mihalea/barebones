@@ -1,9 +1,6 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
-import ro.mihalea.cadets.barebones.logic.exceptions.ExpectedNumberException;
-import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
-import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
-import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.*;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.LinkedList;
@@ -30,7 +27,7 @@ public abstract class BaseInstruction {
      * @param memory Memory handler
      * @return Next program counter
      */
-    public abstract int execute(int programCounter, Memory memory) throws NotAssignedException;
+    public abstract int execute(int programCounter, Memory memory) throws NotAssignedException, InvalidCharacterException, InvalidExpressionException;
 
     /**
      * /**
