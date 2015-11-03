@@ -1,7 +1,8 @@
 language: java
 jdk:
 - oraclejdk8
-
+before_install:
+- chmod +x gradlew
 deploy:
   provider: s3
   access_key_id: AKIAJGGH7AQU4KMZTW6A
