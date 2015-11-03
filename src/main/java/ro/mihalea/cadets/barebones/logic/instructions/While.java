@@ -1,12 +1,11 @@
 package ro.mihalea.cadets.barebones.logic.instructions;
 
-import ro.mihalea.cadets.barebones.logic.exceptions.InvalidNamingException;
-import ro.mihalea.cadets.barebones.logic.exceptions.InvalidSyntaxException;
-import ro.mihalea.cadets.barebones.logic.exceptions.NotAssignedException;
+import ro.mihalea.cadets.barebones.logic.exceptions.*;
 import ro.mihalea.cadets.barebones.logic.units.Evaluator;
 import ro.mihalea.cadets.barebones.logic.units.Memory;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -14,14 +13,9 @@ import java.util.regex.Pattern;
  */
 public class While extends BlockInstruction {
     /**
-     * Left term of the while is expected to be a variable
+     * Condition used to determine if an iteration should run
      */
-    private String leftTerm;
-
-    /**
-     * Right term of the while is expected to be a variable or a number
-     */
-    private String rightTerm;
+    private LinkedList<String> expression = new LinkedList<>();
 
     public While(int lineIndex) {
         super(lineIndex);
@@ -37,21 +31,11 @@ public class While extends BlockInstruction {
      * @throws NotAssignedException
      */
     @Override
-    public int execute(int programCounter, Memory memory) throws NotAssignedException {
-        long lValue = memory.get(leftTerm);
+    public int execute(int programCounter, Memory memory) throws NotAssignedException, InvalidCharacterException, InvalidExpressionException {
+        Evaluator ev = new Evaluator(memory);
+        long result = ev.evaluate(expression);
 
-        /**
-         * Set it to MAX_VALUE to ignore IDE warnings of unset variable.
-         * The program should always fit into one of the following ifs, as
-         * tested when decoded
-         */
-        long rValue = Long.MAX_VALUE;
-        if(Evaluator.isVariable(rightTerm))
-            rValue = memory.get(rightTerm);
-        else if(Evaluator.isNumber(rightTerm))
-            rValue = Long.parseLong(rightTerm);
-
-        return lValue == rValue ? pairIndex + 1 : programCounter + 1;
+        return result != 0 ? programCounter + 1 : pairIndex + 1;
     }
 
     /**
@@ -63,21 +47,17 @@ public class While extends BlockInstruction {
      * @throws InvalidNamingException
      */
     @Override
-    public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException {
-        leftTerm = args.remove();
-        if(!Evaluator.isVariable(leftTerm))
-            throw new InvalidNamingException(leftTerm);
+    public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException,
+            InvalidCharacterException {
+        String token = "";
+        while(!args.isEmpty() && !(token = args.remove()).equals("do")) {
+            if(!(Evaluator.isVariable(token) || Evaluator.isNumber(token) || Evaluator.isOperator(token)))
+                throw new InvalidCharacterException(token);
+            expression.add(token);
+        }
 
-        if(!args.remove().equals("not"))
-            throw new InvalidSyntaxException("Expected not");
-
-        rightTerm = args.remove();
-
-        if(!(Evaluator.isVariable(rightTerm) || Evaluator.isNumber(rightTerm)))
-            throw new InvalidSyntaxException("Right term is not a variable nor a number");
-
-        if(!args.remove().equals("do"))
-            throw new InvalidSyntaxException("Expected do");
+        if(!token.equals("do"))
+            throw new InvalidSyntaxException("Expected do at the end");
 
         return this;
     }

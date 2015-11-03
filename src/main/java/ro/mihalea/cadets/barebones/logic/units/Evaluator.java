@@ -145,6 +145,7 @@ public class Evaluator {
             case "==":
                 return b == a ? 1 : 0;
             case "!=":
+            case "not":
                 return b != a ? 1 : 0;
             default:
                 throw new InvalidCharacterException("Operator not valid");
@@ -157,7 +158,7 @@ public class Evaluator {
      * @return True if the naming meets the specification
      */
     public static boolean isVariable(String variable) {
-        return Pattern.matches(RX_NAME, variable);
+        return  !variable.equals("not") && Pattern.matches(RX_NAME, variable);
     }
 
     /**
@@ -175,7 +176,7 @@ public class Evaluator {
      * @return True if the operator is valid
      */
     public static boolean isOperator(String operator) {
-        return Pattern.matches(RX_OPERATOR, operator);
+        return operator.equals("not" ) || Pattern.matches(RX_OPERATOR, operator);
     }
 
     /**
@@ -199,6 +200,7 @@ public class Evaluator {
             case ">=":
             case "==":
             case "!=":
+            case "not":
                 return 2;
             case "(":
                 return 1;
