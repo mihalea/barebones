@@ -45,14 +45,14 @@ public class Init extends BaseInstruction {
         if(args.size() != 3)
             throw new InvalidSyntaxException();
 
-        variable = args.pop();
+        variable = args.remove();
         if(!Evaluator.isVariable(variable))
             throw new InvalidNamingException(variable);
 
-        if(!args.pop().equals("="))
+        if(!args.remove().equals("="))
             throw new InvalidSyntaxException();
 
-        String rawValue = args.pop();
+        String rawValue = args.remove();
         if(!Evaluator.isNumber(rawValue))
             throw new ExpectedNumberException(rawValue);
 

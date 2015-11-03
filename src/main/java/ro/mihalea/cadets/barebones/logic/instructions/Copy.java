@@ -58,10 +58,10 @@ public class Copy extends BaseInstruction {
         while(!(token = args.pop()).equals("to")) {
             if(!(Evaluator.isVariable(token) || Evaluator.isNumber(token) || Evaluator.isOperator(token)))
                 throw new InvalidSyntaxException();
-            expression.push(token);
+            expression.add(token);
         }
 
-        dest = args.pop();
+        dest = args.remove();
 
         return this;
     }

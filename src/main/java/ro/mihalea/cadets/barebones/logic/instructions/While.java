@@ -64,19 +64,19 @@ public class While extends BlockInstruction {
      */
     @Override
     public BaseInstruction decode(LinkedList<String> args) throws InvalidSyntaxException, InvalidNamingException {
-        leftTerm = args.pop();
+        leftTerm = args.remove();
         if(!Evaluator.isVariable(leftTerm))
             throw new InvalidNamingException(leftTerm);
 
-        if(!args.pop().equals("not"))
+        if(!args.remove().equals("not"))
             throw new InvalidSyntaxException("Expected not");
 
-        rightTerm = args.pop();
+        rightTerm = args.remove();
 
         if(!(Evaluator.isVariable(rightTerm) || Evaluator.isNumber(rightTerm)))
             throw new InvalidSyntaxException("Right term is not a variable nor a number");
 
-        if(!args.pop().equals("do"))
+        if(!args.remove().equals("do"))
             throw new InvalidSyntaxException("Expected do");
 
         return this;

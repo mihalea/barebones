@@ -44,7 +44,7 @@ public class Evaluator {
 
         String token;
         while(!input.isEmpty()) {
-            token = input.pop();
+            token = input.remove();
             if(Evaluator.isNumber(token))
                 values.push(Long.parseLong(token));
             else if(Evaluator.isVariable(token))

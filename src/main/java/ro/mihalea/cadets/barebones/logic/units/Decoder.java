@@ -96,7 +96,7 @@ public class Decoder {
             /**
              * First token is the instruction code
              */
-            String instruction = arguments.pop();
+            String instruction = arguments.remove();
             switch (instruction) {
                 case "incr":
                     return new Increment(lineIndex).decode(arguments);
@@ -114,7 +114,7 @@ public class Decoder {
                 case "end":
                     Integer matchingIndex = blocks.pop();
                     ((BlockInstruction) instructions.get(matchingIndex)).setPairIndex(instructions.size());
-                    arguments.push(matchingIndex.toString());
+                    arguments.add(matchingIndex.toString());
                     return new End(lineIndex).decode(arguments);
                 default:
                     throw new UnknownInstructionException(instruction, lineIndex);

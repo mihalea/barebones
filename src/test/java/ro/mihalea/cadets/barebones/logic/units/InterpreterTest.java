@@ -89,6 +89,12 @@ public class InterpreterTest extends TestCase {
         Interpreter interpreter = new Interpreter();
         Memory memory = interpreter.run("init x = 25; copy x to y; incr y;");
         assertEquals(26, memory.get("y"));
+
+        memory = interpreter.run("init x = 25; copy x + 50 to a;");
+        assertEquals(75, memory.get("a"));
+
+        memory = interpreter.run("init x = 25; copy x + x / 5 to a;");
+        assertEquals(30, memory.get("a"));
     }
 
     public void testMultiply() throws Exception {
