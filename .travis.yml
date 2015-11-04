@@ -11,3 +11,5 @@ deploy:
   bucket: ro.mihalea.barebones
   endpoint: ro.mihalea.barebones.s3-website-eu-west-1.amazonaws.com
   region: eu-west-1
+  skip_cleanup: true
+  file: 'build/libs/Barebones IDE-1.0.jar'
