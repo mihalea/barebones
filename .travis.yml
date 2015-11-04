@@ -9,4 +9,4 @@ deploy:
   secret_access_key:
     secure: NixjBoCo5ep2tH4x4V46XkwXXrefx2Y517FekvuiaNo+m+oNd0lfLvZsAV/ine5+HKdusml124FC2bUCIMyqHPjju9Vpd9/jSb6+cWPCBU6nOVqxEpqekCMZoUqe1GGS1zjMIzK1rybr73lGMAsrQaVejj7qBa/CY781t+zKIUiABbCiH4oHexYk/yOI4lSt3YF1qTKjmvlchVjLrebw/b2Q8lLiARFmoFIKH9668VE+G9EW3AmBQU2H8y7tsFWR079Sf8DmzI20Js5JmOoA2wWeansKkCH/awrGzl8knKl1nPQydDt+mAfW82y9mHCYxy5zb2AtYQ1V/xGHR/7TKicvwtMEoWW/BgaTZPHkyAcxe8lfwCAVIspzKLBMHtrGFt4cZeXc8R6TdV2oEM7pnDT5Ihg972UpmGfZPivfiTbIHXGFjL07LUWgvbw79LnFDsWYIWqN9JofiX7/Ih7qZnMA+RKZWqiudZCUCvXj7sMHqJk8ugbNu1xYe9LwE8O+0mmN1ekcj4o4r2vv2A3nAFlUzgsvn7hPsS3GMUi7N+/7Z/1ZDpniV39aHeYL1NI+b0ciRBn66E+5e+ck/p324VnAbzHphKxipkVkDo16oTx/W6LYzz/A7Cx6UEHHbW3IgSxLSAhlBj3QtCbD5aLKuXLNrK5PVB+TiNq6cnsoZ2o=
   bucket: ro.mihalea.barebones
-  region: eu-west-1
+  endpoint: ro.mihalea.barebones.s3-eu-west-1.amazonaws.com
