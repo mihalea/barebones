@@ -3,6 +3,7 @@ package ro.mihalea.cadets.barebones.logic.units;
 import junit.framework.TestCase;
 import ro.mihalea.cadets.barebones.logic.Interpreter;
 import ro.mihalea.cadets.barebones.Listener;
+import ro.mihalea.cadets.barebones.logic.exceptions.BonesException;
 
 /**
  * Created by mm8g15 on 06/10/2015.
@@ -239,5 +240,15 @@ public class InterpreterTest extends TestCase {
                 "end;");
 
         assertEquals(1, memory.get("y"));
+    }
+
+    public void testEmptyIfs() throws BonesException {
+        Interpreter interpreter = new Interpreter();
+        Memory memory = interpreter.run("init x = 2;" +
+                "if x >= 3;" +
+                "elif x >= 0;" +
+                "incr x;" +
+                "end;");
+        assertEquals(3, memory.get("x"));
     }
 }
