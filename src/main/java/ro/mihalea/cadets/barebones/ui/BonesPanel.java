@@ -22,6 +22,8 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -97,12 +99,6 @@ public class BonesPanel extends JPanel {
         this.listeners = barebonesListeners;
 
         this.setupPanel();
-    }
-
-    private void appendVariables(Memory memory) {
-        for (Map.Entry<String, Long> kv : memory.getVariables().entrySet()) {
-            dataModel.addRow(new Object[]{kv.getKey(), kv.getValue()});
-        }
     }
 
     private void setDebuggingEnabled(boolean enabled) {
@@ -338,6 +334,29 @@ public class BonesPanel extends JPanel {
             }
         });
         file.add(file_save);
+
+
+        JMenuItem file_about = new JMenuItem("About");
+        file_about.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BonesAbout about = new BonesAbout(BonesPanel.this.parent);
+                about.setVisible(true);
+            }
+        });
+        file.add(file_about);
+
+        file.add(new JPopupMenu.Separator());
+
+        JMenuItem file_exit = new JMenuItem("Exit");
+        file_exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BonesPanel.this.parent.dispatchEvent(new WindowEvent(BonesPanel.this.parent,
+                        WindowEvent.WINDOW_CLOSING));
+            }
+        });
+        file.add(file_exit);
 
         menuBar.add(file);
 
