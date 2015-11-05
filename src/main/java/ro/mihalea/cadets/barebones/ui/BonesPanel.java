@@ -274,7 +274,7 @@ public class BonesPanel extends JPanel {
         scrollPane = new RTextScrollPane(textArea);
         scrollPane.setIconRowHeaderEnabled(true);
         gutter = scrollPane.getGutter();
-        icon = new ImageIcon("res/track.png");
+        icon = new ImageIcon(this.getClass().getResource("/track.png"));
 
         c.gridx = 0;
         c.gridy = 0;
