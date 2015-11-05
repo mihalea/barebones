@@ -351,7 +351,7 @@ public class BonesPanel extends JPanel {
 
             switch (option) {
                 case 0:
-                    showFileDialog("Save");
+                    saveDocument();
                     return true;
                 case 1:
                     this.textArea.setText("");
